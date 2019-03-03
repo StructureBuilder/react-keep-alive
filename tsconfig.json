@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "es",
+    "module": "esnext",
+    "esModuleInterop": true,
+    "target": "es5",
+    "lib": ["es6", "dom"],
+    "allowJs": true,
+    "sourceMap": false,
+    "jsx": "react",
+    "moduleResolution": "node",
+    "rootDir": "src",
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitThis": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "experimentalDecorators": true,
+    "noUnusedLocals": true,
+    "typeRoots": [
+      "node_modules/@types",
+      "typings",
+    ],
+  },
+  "exclude": [
+    "node_modules",
+    "jest",
+  ]
+}

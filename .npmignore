@@ -1,0 +1,13 @@
+.DS_Store
+.travis.yml
+.babelrc
+.editorconfig
+test
+demo
+node_modules
+coverage
+src
+tsconfig.json
+webpack.config.js
+tslint.json
+jest.config.js

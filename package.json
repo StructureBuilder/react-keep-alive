@@ -1,0 +1,72 @@
+{
+  "name": "react-keep-alive",
+  "version": "0.1.0",
+  "description": "Keep the state of the component.",
+  "author": "Shen Chang",
+  "homepage": "https://github.com/Sam618/react-keep-alive",
+  "keywords": [
+    "react",
+    "keep-alive"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sam618/react-keep-alive.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Sam618/react-keep-alive/issues"
+  },
+  "main": "es/index.js",
+  "scripts": {
+    "clean": "rimraf es",
+    "test": "jest",
+    "codecov": "codecov",
+    "build:demo": "webpack",
+    "build:es": "npm run clean && tsc",
+    "start:demo": "webpack-dev-server --hot --historyApiFallback",
+    "start:es": "npm run clean && tsc -w -sourcemap --outDir es"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run test"
+    }
+  },
+  "license": "MIT",
+  "sideEffects": false,
+  "dependencies": {
+    "hoist-non-react-statics": "^3.3.0",
+    "js-md5": "^0.7.3"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.4",
+    "@babel/plugin-proposal-class-properties": "^7.3.0",
+    "@babel/plugin-proposal-decorators": "^7.3.0",
+    "@babel/preset-env": "^7.3.4",
+    "@babel/preset-react": "^7.0.0",
+    "@types/node": "^10.12.21",
+    "@types/react": "^16.8.1",
+    "babel": "^6.23.0",
+    "babel-loader": "^8.0.5",
+    "codecov": "^3.2.0",
+    "cz-conventional-changelog": "^2.1.0",
+    "enzyme": "^3.8.0",
+    "enzyme-adapter-react-16": "^1.9.1",
+    "html-webpack-plugin": "^3.2.0",
+    "husky": "^1.3.1",
+    "jest": "^24.1.0",
+    "react": "^16.3.0",
+    "react-dom": "^16.3.0",
+    "react-router-dom": "^4.3.1",
+    "rimraf": "^2.6.3",
+    "ts-jest": "^23.10.5",
+    "typescript": "^3.3.1",
+    "webpack": "^4.29.3",
+    "webpack-cli": "^3.2.3",
+    "webpack-dev-server": "^3.1.14"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "defaultSeverity": "error",
+  "extends": [
+    "tslint:recommended"
+  ],
+  "rules": {
+    "max-line-length": false,
+    "no-console": false,
+    "quotemark": [true, "single", "jsx-double"],
+    "trailing-comma": [true, {"multiline": "ignore", "singleline": "never"}],
+    "ordered-imports": false,
+    "member-ordering": false,
+    "max-classes-per-file": false,
+    "no-unsafe-finally": false,
+    "object-literal-sort-keys": false,
+    "arrow-parens": [true, "ban-single-arg-parens"]
+  }
+}

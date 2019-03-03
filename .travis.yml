@@ -1,0 +1,13 @@
+language : node_js
+
+node_js:
+  - "11"
+
+install:
+  - npm install
+
+script:
+  - npm test
+
+after_success:
+  - npm run codecov
