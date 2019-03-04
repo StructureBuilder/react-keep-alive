@@ -1,29 +1,60 @@
 import React from 'react';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import IdentificationContext from '../contexts/IdentificationContext';
-import Consumer, {LIFECYCLE} from '../components/Consumer';
-import {START_MOUNTING_DOM} from '../components/Provider';
+import Consumer from '../components/Consumer';
+import {START_MOUNTING_DOM, LIFECYCLE} from '../components/Provider';
 import md5 from './md5';
 import noop from './noop';
 import getContextIdentificationByFiberNode from './getContextIdentificationByFiberNode';
-import withIdentificationContextConsumer from './withIdentificationContextConsumer';
-import withKeepAliveContextConsumer from './withKeepAliveContextConsumer';
+import withIdentificationContextConsumer, {IIdentificationContextComponentProps} from './withIdentificationContextConsumer';
+import withKeepAliveContextConsumer, {IKeepAliveContextComponentProps} from './withKeepAliveContextConsumer';
 import changePositionByComment from './changePositionByComment';
 import shallowEqual from './shallowEqual';
 import getDisplayName from './getDisplayName';
 import getKeepAlive from './getKeepAlive';
 
-export const COMMAND = {
-  UNACTIVATE: 'unactivate',
-  UNMOUNT: 'unmount',
-  ACTIVATE: 'activate',
-};
+export enum COMMAND {
+  UNACTIVATE = 'unactivate',
+  UNMOUNT = 'unmount',
+  ACTIVATE = 'activate',
+}
 
-export default function keepAlive({
+export interface IOptions {
+  name?: string;
+  forwardRef?: boolean;
+}
+
+export const keepAliveDisplayName = 'keepAlive';
+
+interface IKeepAliveDecorativeComponentProps {
+  keepAlive?: boolean;
+}
+
+interface IListenUpperKeepAliveContainerProps extends IKeepAliveDecorativeComponentProps, IIdentificationContextComponentProps, IKeepAliveContextComponentProps {
+  forwardedRef?: React.Ref<{}>;
+}
+
+interface IListenUpperKeepAliveContainerState {
+  activated: boolean;
+}
+
+interface ITriggerLifecycleContainerProps extends IKeepAliveContextComponentProps {
+  forwardedRef?: React.Ref<{}>;
+  keepAlive: boolean;
+  getCombinedKeepAlive: () => boolean;
+}
+
+interface IComponentProps {
+  _container: object;
+  keepAlive: boolean;
+  ref: React.Ref<{}>;
+}
+
+export default function keepAliveDecorator({
   name,
   forwardRef = false,
-} = {}) {
-  return Component => {
+}: IOptions = {}) {
+  return (Component: React.ComponentType<IComponentProps>) => {
     const {
       componentDidMount = noop,
       componentDidUpdate = noop,
@@ -31,7 +62,7 @@ export default function keepAlive({
       componentWillUnactivate = noop,
       componentWillUnmount = noop,
     } = Component.prototype;
-    const displayName = name || getDisplayName(Component);
+    const displayName = (name || getDisplayName(Component)) as any;
 
     if (!displayName) {
       throw new Error('Each component must have a name, which can be the component\'s displayName or name static property. You can also configure name when keepAlive decorates the component.');
@@ -79,7 +110,7 @@ export default function keepAlive({
       unmount.call(this);
     };
     Component.prototype.componentWillUnmount = function () {
-      // Because we will manually call the componentWillUnmount lifecycle 
+      // Because we will manually call the componentWillUnmount lifecycle
       // so we need to prevent it from firing multiple times
       if (!this._unmounted) {
         this._unmounted = true;
@@ -88,7 +119,7 @@ export default function keepAlive({
       }
     };
 
-    function mount() {
+    function mount(this: any) {
       const {
         _container: {
           cache,
@@ -102,7 +133,7 @@ export default function keepAlive({
       changePositionByComment(identification, renderElement, storeElement);
     }
 
-    function unmount() {
+    function unmount(this: any) {
       const {
         _container: {
           identification,
@@ -119,21 +150,21 @@ export default function keepAlive({
       }
     }
 
-    class TriggerLifecycleContainer extends React.PureComponent {
-      identification = null;
+    class TriggerLifecycleContainer extends React.PureComponent<ITriggerLifecycleContainerProps> {
+      private identification: string;
 
-      ref = null;
+      private ref: any;
 
-      activated = false;
+      private activated = false;
 
-      ifStillActivate = false;
+      private ifStillActivate = false;
 
       // Let the lifecycle of the cached component be called normally.
-      needActivate = true;
+      private needActivate = true;
 
-      lifecycle = LIFECYCLE.MOUNTED;
+      private lifecycle = LIFECYCLE.MOUNTED;
 
-      componentDidMount() {
+      public componentDidMount() {
         if (!this.ifStillActivate) {
           this.activate();
         }
@@ -141,7 +172,7 @@ export default function keepAlive({
           keepAlive,
           _keepAliveContextProps: {
             eventEmitter,
-          }, 
+          },
         } = this.props;
         if (keepAlive) {
           this.needActivate = true;
@@ -149,18 +180,18 @@ export default function keepAlive({
         }
       }
 
-      componentDidCatch() {
+      public componentDidCatch() {
         if (!this.activated) {
           this.activate();
         }
       }
 
-      componentWillUnmount() {
+      public componentWillUnmount() {
         const {
           getCombinedKeepAlive,
           _keepAliveContextProps: {
-            eventEmitter, 
-            isExisted, 
+            eventEmitter,
+            isExisted,
           },
         } = this.props;
         const keepAlive = getCombinedKeepAlive();
@@ -170,7 +201,7 @@ export default function keepAlive({
           }
           eventEmitter.emit([this.identification, COMMAND.UNMOUNT]);
         }
-        // When the Provider components are unmounted, the cache is not needed, 
+        // When the Provider components are unmounted, the cache is not needed,
         // so you don't have to execute the componentWillUnactivate lifecycle.
         if (keepAlive && isExisted()) {
           if (this.ref) {
@@ -180,57 +211,60 @@ export default function keepAlive({
         }
       }
 
-      activate = () => {
+      private activate = () => {
         this.activated = true;
-      };
+      }
 
-      reactivate = () => {
+      private reactivate = () => {
         this.ifStillActivate = false;
         this.forceUpdate();
-      };
+      }
 
-      isNeedActivate = () => {
+      private isNeedActivate = () => {
         return this.needActivate;
-      };
+      }
 
-      notNeedActivate = () => {
+      private notNeedActivate = () => {
         this.needActivate = false;
-      };
+      }
 
-      getLifecycle = () => {
+      private getLifecycle = () => {
         return this.lifecycle;
-      };
+      }
 
-      setLifecycle = lifecycle => {
+      private setLifecycle = (lifecycle: LIFECYCLE) => {
         this.lifecycle = lifecycle;
-      };
+      }
 
-      setRef = ref => {
+      private setRef = (ref: any) => {
         this.ref = ref;
         const {
           forwardedRef,
         } = this.props;
         if (forwardedRef) {
-          forwardedRef(ref);
+          (forwardedRef as any)(ref);
         }
-      };
+      }
 
-      render() {
+      public render() {
         if (!this.identification) {
           // We need to generate a corresponding unique identifier based on the information of the component.
-          const {providerIdentification, cache} = this.props._keepAliveContextProps;
+          const {
+            providerIdentification,
+            cache,
+          } = this.props._keepAliveContextProps;
           const {
             paths,
             globalKey,
             typeNames,
-          } = getContextIdentificationByFiberNode(this._reactInternalFiber);
+          } = getContextIdentificationByFiberNode((this as any)._reactInternalFiber);
           this.identification = md5(
             `${providerIdentification}${displayName}${globalKey ? `${globalKey}${typeNames}` : paths}`,
           );
           // The last activated component must be unactivated before it can be activated again.
           const currentCache = cache[this.identification];
           if (currentCache) {
-            this.ifStillActivate = currentCache.activated;
+            this.ifStillActivate = currentCache.activated as boolean;
             currentCache.ifStillActivate = this.ifStillActivate;
             currentCache.reactivate = this.reactivate;
           }
@@ -248,6 +282,7 @@ export default function keepAlive({
         const {
           keepAlive,
           forwardedRef,
+          getCombinedKeepAlive,
           _keepAliveContextProps: {
             isExisted,
             storeElement,
@@ -277,7 +312,7 @@ export default function keepAlive({
                   isExisted,
                 }}
               >
-                <Component 
+                <Component
                   {...wrapperProps}
                   keepAlive={keepAlive}
                   ref={setRef}
@@ -293,61 +328,67 @@ export default function keepAlive({
                 />
               </IdentificationContext.Provider>
             </Consumer>
-          ) 
+          )
         : null;
       }
     }
 
-    @withKeepAliveContextConsumer
-    @withIdentificationContextConsumer
-    class ListenUpperKeepAliveContainer extends React.Component {
-      combinedKeepAlive = this.props.keepAlive;
+    class ListenUpperKeepAliveContainer extends React.Component<IListenUpperKeepAliveContainerProps, IListenUpperKeepAliveContainerState> {
+      public static displayName = `${keepAliveDisplayName}(${displayName})`;
 
-      state = {
+      private combinedKeepAlive: boolean;
+
+      public state = {
         activated: true,
       };
 
-      shouldComponentUpdate(nextProps, nextState) {
+      private activate: () => void;
+
+      private unactivate: () => void;
+
+      private unmount: () => void;
+
+      public shouldComponentUpdate(nextProps: IListenUpperKeepAliveContainerProps, nextState: IListenUpperKeepAliveContainerState) {
         if (this.state.activated !== nextState.activated) {
           return true;
         }
         const {
-          _keepAliveContextProps, 
+          _keepAliveContextProps,
           _identificationContextProps,
           ...rest
         } = this.props;
         const {
-          _keepAliveContextProps: _nextKeepAliveContextProps,
-          _identificationContextProps: _nextIdentificationContextProps,
+          _keepAliveContextProps: nextKeepAliveContextProps,
+          _identificationContextProps: nextIdentificationContextProps,
           ...nextRest
         } = nextProps;
         if (!shallowEqual(rest, nextRest)) {
           return true;
         }
         if (
-          !shallowEqual(_keepAliveContextProps, _nextKeepAliveContextProps) ||
-          !shallowEqual(_identificationContextProps, _nextIdentificationContextProps)
+          !shallowEqual(_keepAliveContextProps, nextKeepAliveContextProps) ||
+          !shallowEqual(_identificationContextProps, nextIdentificationContextProps)
         ) {
           return true;
         }
         return false;
       }
 
-      componentDidMount() {
+      public componentDidMount() {
         this.listenUpperKeepAlive();
       }
 
-      componentWillUnmount() {
+      public componentWillUnmount() {
         this.unlistenUpperKeepAlive();
       }
 
-      listenUpperKeepAlive() {
+      private listenUpperKeepAlive() {
         const {identification, eventEmitter} = this.props._identificationContextProps;
         if (!identification) {
           return;
         }
         eventEmitter.on(
-          [identification, COMMAND.ACTIVATE], 
+          [identification, COMMAND.ACTIVATE],
           this.activate = () => this.setState({activated: true}),
           true,
         );
@@ -363,7 +404,7 @@ export default function keepAlive({
         );
       }
 
-      unlistenUpperKeepAlive() {
+      private unlistenUpperKeepAlive() {
         const {identification, eventEmitter} = this.props._identificationContextProps;
         if (!identification) {
           return;
@@ -373,28 +414,34 @@ export default function keepAlive({
         eventEmitter.off([identification, COMMAND.UNMOUNT], this.unmount);
       }
 
-      getCombinedKeepAlive = () => {
+      private getCombinedKeepAlive = () => {
         return this.combinedKeepAlive;
-      };
+      }
 
-      render() {
+      public render() {
         const {
           _identificationContextProps: {
             identification,
-            keepAlive: _keepAlive,
+            keepAlive: upperKeepAlive,
             getLifecycle,
           },
           keepAlive,
           ...wrapperProps
         } = this.props;
         const {activated} = this.state;
-        // When the parent KeepAlive component is mounted or unmounted, 
+        const {
+          _keepAliveContextProps: {
+            include,
+            exclude,
+          },
+        } = wrapperProps;
+        // When the parent KeepAlive component is mounted or unmounted,
         // use the keepAlive prop of the parent KeepAlive component.
-        const newKeepAlive = getKeepAlive(keepAlive);
+        const newKeepAlive = getKeepAlive(displayName, include, exclude, keepAlive);
         this.combinedKeepAlive = getLifecycle === undefined || getLifecycle() === LIFECYCLE.UPDATING
           ? newKeepAlive
-          : identification 
-            ? _keepAlive && newKeepAlive
+          : identification
+            ? upperKeepAlive && newKeepAlive
             : newKeepAlive;
         return activated
           ? (
@@ -408,16 +455,19 @@ export default function keepAlive({
       }
     }
 
-    let NewComponent = ListenUpperKeepAliveContainer;
+    const ListenUpperKeepAliveContainerHOC: any = withKeepAliveContextConsumer(
+      withIdentificationContextConsumer(ListenUpperKeepAliveContainer)
+    );
+
+    let NewComponent: React.ComponentType<IKeepAliveDecorativeComponentProps> = ListenUpperKeepAliveContainerHOC;
     if (forwardRef) {
       NewComponent = React.forwardRef((props, ref) => (
-        <ListenUpperKeepAliveContainer
+        <ListenUpperKeepAliveContainerHOC
           {...props}
           forwardedRef={ref}
         />
       ));
     }
-    NewComponent.displayName = `keepAlive(${displayName})`;
     return hoistNonReactStatics(NewComponent, Component);
   };
 }

@@ -5,7 +5,7 @@ import {COMMAND} from './keepAlive';
 import withIdentificationContextConsumer from './withIdentificationContextConsumer';
 import getDisplayName from './getDisplayName';
 
-export default function bindLifecycle(Component) {
+export default function bindLifecycle<P = any>(Component: React.ComponentType<P>) {
   const {
     componentDidMount = noop,
     componentDidUpdate = noop,
@@ -30,8 +30,8 @@ export default function bindLifecycle(Component) {
       componentDidActivate.call(this);
     }
     eventEmitter.on(
-      [identification, COMMAND.ACTIVATE], 
-      this._bindActivate = () => this._needActivate = true, 
+      [identification, COMMAND.ACTIVATE],
+      this._bindActivate = () => this._needActivate = true,
       true,
     );
     eventEmitter.on(
@@ -84,11 +84,11 @@ export default function bindLifecycle(Component) {
 
   const NewComponent = withIdentificationContextConsumer(
     ({
-      forwardRef, 
+      forwardRef,
       _identificationContextProps: {
-        identification, 
-        eventEmitter, 
-        activated, 
+        identification,
+        eventEmitter,
+        activated,
         keepAlive,
       },
       ...wrapperProps
@@ -105,11 +105,11 @@ export default function bindLifecycle(Component) {
               activated,
             }}
           />
-        ) 
+        )
         : null
     ),
   );
-  
+
   NewComponent.displayName = `bindLifecycle(${getDisplayName(Component)})`;
   return hoistNonReactStatics(
     React.forwardRef((props, ref) => (
@@ -117,4 +117,4 @@ export default function bindLifecycle(Component) {
     )),
     Component,
   );
-};
+}

@@ -13,6 +13,8 @@
     "max-classes-per-file": false,
     "no-unsafe-finally": false,
     "object-literal-sort-keys": false,
+    "space-before-function-paren": false,
+    "no-shadowed-variable": false,
     "arrow-parens": [true, "ban-single-arg-parens"]
   }
 }

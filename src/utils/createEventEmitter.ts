@@ -1,7 +1,11 @@
+type EventNames = string | string[];
+
+type Listener = (...args: any) => void;
+
 export default function createEventEmitter() {
   let events = Object.create(null);
 
-  function on(eventNames, listener, direction = false) {
+  function on(eventNames: EventNames, listener: Listener, direction = false) {
     eventNames = getEventNames(eventNames);
     let current = events;
     const maxIndex =  eventNames.length - 1;
@@ -9,7 +13,7 @@ export default function createEventEmitter() {
       const key = eventNames[i];
       if (!current[key]) {
         current[key] = i === maxIndex ? [] : {};
-      };
+      }
       current = current[key];
     }
     if (!Array.isArray(current)) {
@@ -22,41 +26,43 @@ export default function createEventEmitter() {
     }
   }
 
-  function off(eventNames, listener) {
+  function off(eventNames: EventNames, listener: Listener) {
     const listeners = getListeners(eventNames);
     if (!listeners) {
       return;
     }
-    const matchIndex = listeners.findIndex(v => v === listener);
+    const matchIndex = listeners.findIndex((v: Listener) => v === listener);
     if (matchIndex !== -1) {
       listeners.splice(matchIndex, 1);
     }
   }
 
-  function removeAllListeners(eventNames) {
+  function removeAllListeners(eventNames: EventNames) {
     const listeners = getListeners(eventNames);
     if (!listeners) {
       return;
     }
     eventNames = getEventNames(eventNames);
     const lastEventName = eventNames.pop();
-    const event = eventNames.reduce((obj, key) => obj[key], events);
-    event[lastEventName] = [];
+    if (lastEventName) {
+      const event = eventNames.reduce((obj, key) => obj[key], events);
+      event[lastEventName] = [];
+    }
   }
 
-  function emit(eventNames, ...args) {
+  function emit(eventNames: EventNames, ...args: any) {
     const listeners = getListeners(eventNames);
     if (!listeners) {
       return;
     }
-    for (let i = 0; i < listeners.length; i++) {
-      if (listeners[i]) {
-        listeners[i](...args);
+    for (const listener of listeners) {
+      if (listener) {
+        listener(...args);
       }
     }
   }
 
-  function listenerCount(eventNames) {
+  function listenerCount(eventNames: EventNames) {
     const listeners =  getListeners(eventNames);
     return listeners ? listeners.length : 0;
   }
@@ -65,14 +71,16 @@ export default function createEventEmitter() {
     events = Object.create(null);
   }
 
-  function getListeners(eventNames) {
+  function getListeners(eventNames: EventNames): Listener[] | undefined {
     eventNames = getEventNames(eventNames);
     try {
       return eventNames.reduce((obj, key) => obj[key], events);
-    } catch (e) {}
+    } catch (e) {
+      return;
+    }
   }
 
-  function getEventNames(eventNames) {
+  function getEventNames(eventNames: EventNames): string[] {
     if (!eventNames) {
       throw new Error('Must exist event name.');
     }
@@ -90,4 +98,4 @@ export default function createEventEmitter() {
     listenerCount,
     removeAllListeners,
   };
-};
+}

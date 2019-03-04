@@ -1,9 +1,11 @@
+import React from 'react';
 import {keepAliveProviderTypeName} from '../components/Provider';
+import {keepAliveDisplayName} from './keepAlive';
 
-export default function getContextIdentificationByFiberNode(fiberNode) {
-  let globalKey = null;
+export default function getContextIdentificationByFiberNode(fiberNode: any) {
+  let globalKey: React.Key | null = null;
   let typeNames = '';
-  function getPathsByFiberNode(fiberNode) {
+  function getPathsByFiberNode(fiberNode: any) {
     if (!fiberNode) {
       return '';
     }
@@ -12,12 +14,12 @@ export default function getContextIdentificationByFiberNode(fiberNode) {
       key,
       index,
     } = fiberNode;
-    let typeName = type && type.name ? type.name : '';
+    const typeName = type && type.displayName;
     if (typeName === keepAliveProviderTypeName) {
       return '';
     }
-    const joinName = getPathsByFiberNode(fiberNode.return);
-    if (type && type.displayName && type.displayName.indexOf('keepAlive') !== -1) {
+    const joinName: string = getPathsByFiberNode(fiberNode.return);
+    if (type && type.displayName && type.displayName.indexOf(keepAliveDisplayName) !== -1) {
       if (!globalKey) {
         globalKey = key;
       }

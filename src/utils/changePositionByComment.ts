@@ -1,17 +1,16 @@
-const NODE_TYPES = {
-  ELEMENT: 1,
-  COMMENT: 8,
-};
+enum NODE_TYPES {
+  ELEMENT = 1,
+  COMMENT = 8,
+}
 
-function findElementsBetweenComments(node, identification) {
+function findElementsBetweenComments(node: Node, identification: string): Node[] {
   const elements = [];
-  const childNodes = node.childNodes;
+  const childNodes = node.childNodes as any;
   let startCommentExist = false;
-  for (let i = 0; i < childNodes.length; i++) {
-    const child = childNodes[i];
+  for (const child of childNodes) {
     if (
       child.nodeType === NODE_TYPES.COMMENT &&
-      child.nodeValue.trim() === identification && 
+      child.nodeValue.trim() === identification &&
       !startCommentExist
     ) {
       startCommentExist = true;
@@ -24,10 +23,9 @@ function findElementsBetweenComments(node, identification) {
   return elements;
 }
 
-function findComment(node, identification) {
-  const childNodes = node.childNodes;
-  for (let i = 0; i < childNodes.length; i++) {
-    const child = childNodes[i];
+function findComment(node: Node, identification: string): Node | undefined {
+  const childNodes = node.childNodes as any;
+  for (const child of childNodes) {
     if (
       child.nodeType === NODE_TYPES.COMMENT &&
       child.nodeValue.trim() === identification
@@ -37,7 +35,7 @@ function findComment(node, identification) {
   }
 }
 
-export default function changePositionByComment(identification, presentParentNode, originalParentNode) {
+export default function changePositionByComment(identification: string, presentParentNode: Node, originalParentNode: Node) {
   if (!presentParentNode || !originalParentNode) {
     return;
   }
@@ -46,8 +44,8 @@ export default function changePositionByComment(identification, presentParentNod
   if (!elementNodes.length || !commentNode) {
     return;
   }
-  elementNodes.push(elementNodes[elementNodes.length - 1].nextSibling);
-  elementNodes.unshift(elementNodes[0].previousSibling);
+  elementNodes.push(elementNodes[elementNodes.length - 1].nextSibling as Node);
+  elementNodes.unshift(elementNodes[0].previousSibling as Node);
   // Deleting comment elements when using commet components will result in component uninstallation errors
   for (let i = elementNodes.length - 1; i >= 0; i--) {
     presentParentNode.insertBefore(elementNodes[i], commentNode);

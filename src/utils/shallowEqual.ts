@@ -1,7 +1,7 @@
 /**
  * From react
  */
-function is(x, y) {
+function is(x: any, y: any) {
   return (
     (x === y && (x !== 0 || 1 / x === 1 / y)) || (x !== x && y !== y) // eslint-disable-line no-self-compare
   );
@@ -9,7 +9,7 @@ function is(x, y) {
 
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 
-function shallowEqual(objA, objB) {
+function shallowEqual(objA: object, objB: object) {
   if (is(objA, objB)) {
     return true;
   }
@@ -31,10 +31,10 @@ function shallowEqual(objA, objB) {
   }
 
   // Test for A's keys different from B.
-  for (let i = 0; i < keysA.length; i++) {
+  for (const key of keysA) {
     if (
-      !hasOwnProperty.call(objB, keysA[i]) ||
-      !is(objA[keysA[i]], objB[keysA[i]])
+      !hasOwnProperty.call(objB, key) ||
+      !is(objA[key], objB[key])
     ) {
       return false;
     }

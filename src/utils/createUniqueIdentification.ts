@@ -10,7 +10,7 @@ export const prefix = 'keep-alive';
  */
 export default function createUniqueIdentification(length = 6) {
   const strings = [];
-  for (var i = 0; i < length; i++) {
+  for (let i = 0; i < length; i++) {
     strings[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
   }
   return `${prefix}-${strings.join('')}`;

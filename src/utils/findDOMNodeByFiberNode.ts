@@ -1,9 +1,9 @@
-export default function findDOMNodeByFiberNode(fiberNode) {
+export default function findDOMNodeByFiberNode(fiberNode: any): HTMLElement | null {
   if (!fiberNode) {
     return null;
   }
   const {
-    stateNode, 
+    stateNode,
     return: parent,
   } = fiberNode;
   if (!parent) {

@@ -33,6 +33,7 @@
   "license": "MIT",
   "sideEffects": false,
   "dependencies": {
+    "@types/js-md5": "^0.4.2",
     "hoist-non-react-statics": "^3.3.0",
     "js-md5": "^0.7.3"
   },
@@ -43,8 +44,10 @@
     "@babel/plugin-proposal-decorators": "^7.3.0",
     "@babel/preset-env": "^7.3.4",
     "@babel/preset-react": "^7.0.0",
+    "@types/hoist-non-react-statics": "^3.0.1",
     "@types/node": "^10.12.21",
     "@types/react": "^16.8.1",
+    "@types/react-dom": "^16.8.2",
     "babel": "^6.23.0",
     "babel-loader": "^8.0.5",
     "codecov": "^3.2.0",
