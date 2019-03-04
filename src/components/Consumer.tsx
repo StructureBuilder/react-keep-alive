@@ -1,6 +1,7 @@
 import React from 'react';
 import Comment from './Comment';
 import {LIFECYCLE, ICache, ICacheItem} from './Provider';
+import {warn} from '../utils/debug';
 import findDOMNodeByFiberNode from '../utils/findDOMNodeByFiberNode';
 import createUniqueIdentification from '../utils/createUniqueIdentification';
 
@@ -25,7 +26,7 @@ class Consumer extends React.PureComponent<IConsumerProps> {
     super(props, ...args);
     const {cache, setCache, children} = props;
     if (!cache || !setCache) {
-      throw new Error('<KeepAlive> component must be in the <Provider> component.');
+      warn('[React Keep Alive] <KeepAlive> component must be in the <Provider> component.');
     }
     React.Children.only(children);
   }

@@ -5,6 +5,7 @@ import Consumer from '../components/Consumer';
 import {START_MOUNTING_DOM, LIFECYCLE} from '../components/Provider';
 import md5 from './md5';
 import noop from './noop';
+import {warn} from './debug';
 import getContextIdentificationByFiberNode from './getContextIdentificationByFiberNode';
 import withIdentificationContextConsumer, {IIdentificationContextComponentProps} from './withIdentificationContextConsumer';
 import withKeepAliveContextConsumer, {IKeepAliveContextComponentProps} from './withKeepAliveContextConsumer';
@@ -65,7 +66,7 @@ export default function keepAliveDecorator({
     const displayName = (name || getDisplayName(Component)) as any;
 
     if (!displayName) {
-      throw new Error('Each component must have a name, which can be the component\'s displayName or name static property. You can also configure name when keepAlive decorates the component.');
+      warn('[React Keep Alive] Each component must have a name, which can be the component\'s displayName or name static property. You can also configure name when keepAlive decorates the component.');
     }
 
     Component.prototype.componentDidMount = function () {

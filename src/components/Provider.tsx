@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import Comment from './Comment';
 import KeepAliveContext from '../contexts/KeepAliveContext';
 import createEventEmitter from '../utils/createEventEmitter';
+import {warn} from '../utils/debug';
 import createUniqueIdentification from '../utils/createUniqueIdentification';
 import createStoreElement from '../utils/createStoreElement';
 
@@ -88,7 +89,7 @@ export default class KeepAliveProvider extends React.PureComponent<IKeepAlivePro
     const currentCache = cache[identification];
     const key = currentCache && currentCache.key;
     if (key && value.key && key !== (value.key as unknown)) {
-      throw new Error('Cached components have duplicates.');
+      warn('[React Keep Alive] Cached components have duplicates.');
     }
     if (!currentCache) {
       keys.push(identification);

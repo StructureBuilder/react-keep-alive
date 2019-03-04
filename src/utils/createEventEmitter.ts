@@ -1,3 +1,5 @@
+import {warn} from './debug';
+
 type EventNames = string | string[];
 
 type Listener = (...args: any) => void;
@@ -17,7 +19,7 @@ export default function createEventEmitter() {
       current = current[key];
     }
     if (!Array.isArray(current)) {
-      throw new Error('Access path error.');
+      warn('[React Keep Alive] Access path error.');
     }
     if (direction) {
       current.unshift(listener);
@@ -82,7 +84,7 @@ export default function createEventEmitter() {
 
   function getEventNames(eventNames: EventNames): string[] {
     if (!eventNames) {
-      throw new Error('Must exist event name.');
+      warn('[React Keep Alive] Must exist event name.');
     }
     if (typeof eventNames === 'string') {
       eventNames = [eventNames];
