@@ -9,11 +9,11 @@ export default function bindLifecycle<P = any>(Component: React.ComponentType<P>
   const {
     WrappedComponent,
     wrappedComponent,
-  } = Component;
+  } = Component as any;
   if (WrappedComponent || wrappedComponent) {
     Component = WrappedComponent || wrappedComponent;
   }
-  
+
   const {
     componentDidMount = noop,
     componentDidUpdate = noop,
@@ -121,7 +121,7 @@ export default function bindLifecycle<P = any>(Component: React.ComponentType<P>
     <BindLifecycleHOC {...props} forwardRef={ref} />
   ));
 
-  BindLifecycle.WrappedComponent = Component;
+  (BindLifecycle as any).WrappedComponent = Component;
   BindLifecycle.displayName = `bindLifecycle(${getDisplayName(Component)})`;
   return hoistNonReactStatics(
     BindLifecycle,

@@ -59,11 +59,11 @@ export default function keepAliveDecorator({
     const {
       WrappedComponent,
       wrappedComponent,
-    } = Component;
+    } = Component as any;
     if (WrappedComponent || wrappedComponent) {
       Component = WrappedComponent || wrappedComponent;
     }
-    
+
     const {
       componentDidMount = noop,
       componentDidUpdate = noop,
@@ -476,7 +476,7 @@ export default function keepAliveDecorator({
       ));
     }
 
-    KeepAlive.WrappedComponent = Component;
+    (KeepAlive as any).WrappedComponent = Component;
     KeepAlive.displayName = `${keepAliveDisplayName}(${displayName})`;
     return hoistNonReactStatics(KeepAlive, Component);
   };

@@ -1,6 +1,6 @@
 {
   "name": "react-keep-alive",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Keep the state of the component.",
   "author": "Shen Chang",
   "homepage": "https://github.com/Sam618/react-keep-alive",
