@@ -56,6 +56,14 @@ export default function keepAliveDecorator({
 }: IOptions = {}) {
   return (Component: React.ComponentType<IComponentProps>) => {
     const {
+      WrappedComponent,
+      wrappedComponent,
+    } = Component;
+    if (WrappedComponent || wrappedComponent) {
+      Component = WrappedComponent || wrappedComponent;
+    }
+    
+    const {
       componentDidMount = noop,
       componentDidUpdate = noop,
       componentDidActivate = noop,
@@ -334,8 +342,6 @@ export default function keepAliveDecorator({
     }
 
     class ListenUpperKeepAliveContainer extends React.Component<IListenUpperKeepAliveContainerProps, IListenUpperKeepAliveContainerState> {
-      public static displayName = `${keepAliveDisplayName}(${displayName})`;
-
       private combinedKeepAlive: boolean;
 
       public state = {
@@ -459,15 +465,18 @@ export default function keepAliveDecorator({
       withIdentificationContextConsumer(ListenUpperKeepAliveContainer)
     );
 
-    let NewComponent: React.ComponentType<IKeepAliveDecorativeComponentProps> = ListenUpperKeepAliveContainerHOC;
+    let KeepAlive: React.ComponentType<IKeepAliveDecorativeComponentProps> = ListenUpperKeepAliveContainerHOC;
     if (forwardRef) {
-      NewComponent = React.forwardRef((props, ref) => (
+      KeepAlive = React.forwardRef((props, ref) => (
         <ListenUpperKeepAliveContainerHOC
           {...props}
           forwardedRef={ref}
         />
       ));
     }
-    return hoistNonReactStatics(NewComponent, Component);
+
+    KeepAlive.WrappedComponent = Component;
+    KeepAlive.displayName = `${keepAliveDisplayName}(${displayName})`;
+    return hoistNonReactStatics(KeepAlive, Component);
   };
 }
