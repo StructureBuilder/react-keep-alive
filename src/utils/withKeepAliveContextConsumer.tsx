@@ -12,7 +12,7 @@ export interface IKeepAliveContextComponentProps {
 export default function withKeepAliveContextConsumer<P = any>(Component: React.ComponentType<IKeepAliveContextComponentProps & P>) {
   const NewComponent = (props: P) => (
     <KeepAliveContext.Consumer>
-      {(contextProps: IKeepAliveContextProps) => <Component _keepAliveContextProps={contextProps || {}} {...props} />}
+      {(contextProps: IKeepAliveContextProps) => <Component _keepAliveContextProps={contextProps} {...props} />}
     </KeepAliveContext.Consumer>
   );
 

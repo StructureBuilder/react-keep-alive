@@ -7,6 +7,14 @@ import getDisplayName from './getDisplayName';
 
 export default function bindLifecycle<P = any>(Component: React.ComponentType<P>) {
   const {
+    WrappedComponent,
+    wrappedComponent,
+  } = Component;
+  if (WrappedComponent || wrappedComponent) {
+    Component = WrappedComponent || wrappedComponent;
+  }
+  
+  const {
     componentDidMount = noop,
     componentDidUpdate = noop,
     componentDidActivate = noop,
@@ -82,7 +90,7 @@ export default function bindLifecycle<P = any>(Component: React.ComponentType<P>
     );
   };
 
-  const NewComponent = withIdentificationContextConsumer(
+  const BindLifecycleHOC = withIdentificationContextConsumer(
     ({
       forwardRef,
       _identificationContextProps: {
@@ -109,12 +117,14 @@ export default function bindLifecycle<P = any>(Component: React.ComponentType<P>
         : null
     ),
   );
+  const BindLifecycle = React.forwardRef((props, ref) => (
+    <BindLifecycleHOC {...props} forwardRef={ref} />
+  ));
 
-  NewComponent.displayName = `bindLifecycle(${getDisplayName(Component)})`;
+  BindLifecycle.WrappedComponent = Component;
+  BindLifecycle.displayName = `bindLifecycle(${getDisplayName(Component)})`;
   return hoistNonReactStatics(
-    React.forwardRef((props, ref) => (
-      <NewComponent {...props} forwardRef={ref} />
-    )),
+    BindLifecycle,
     Component,
   );
 }
