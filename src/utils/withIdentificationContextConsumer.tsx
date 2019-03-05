@@ -18,7 +18,7 @@ export interface IIdentificationContextComponentProps {
 export default function withIdentificationContextConsumer<P = any>(Component: React.ComponentType<IIdentificationContextComponentProps & P>) {
   const NewComponent = (props: P) => (
     <IdentificationContext.Consumer>
-      {(contextProps: IIdentificationContextProps) => <Component _identificationContextProps={contextProps || {}} {...props} />}
+      {(contextProps: IIdentificationContextProps) => <Component _identificationContextProps={contextProps} {...props} />}
     </IdentificationContext.Consumer>
   );
 
