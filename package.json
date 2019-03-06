@@ -1,7 +1,7 @@
 {
   "name": "react-keep-alive",
-  "version": "0.2.0",
-  "description": "Keep the state of the component.",
+  "version": "0.2.2",
+  "description": "Package will allow components to maintain their status, to avoid repeated re-rendering.",
   "author": "Shen Chang",
   "homepage": "https://github.com/Sam618/react-keep-alive",
   "keywords": [

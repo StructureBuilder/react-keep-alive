@@ -3,7 +3,7 @@ Package will allow components to maintain their status, to avoid repeated re-ren
 
 ## TODO
 - MAX
-- wrappedComponent
+- ✅wrappedComponent
 - document
 - test
 

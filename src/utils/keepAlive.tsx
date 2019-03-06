@@ -18,6 +18,8 @@ export enum COMMAND {
   UNACTIVATE = 'unactivate',
   UNMOUNT = 'unmount',
   ACTIVATE = 'activate',
+  CURRENT_UNMOUNT = 'current_unmount',
+  CURRENT_UNACTIVATE = 'current_unactivate',
 }
 
 export interface IOptions {
@@ -56,13 +58,7 @@ export default function keepAliveDecorator({
   forwardRef = false,
 }: IOptions = {}) {
   return (Component: React.ComponentType<IComponentProps>) => {
-    const {
-      WrappedComponent,
-      wrappedComponent,
-    } = Component as any;
-    if (WrappedComponent || wrappedComponent) {
-      Component = WrappedComponent || wrappedComponent;
-    }
+    const WrappedComponent = (Component as any).WrappedComponent || (Component as any).wrappedComponent || Component;
 
     const {
       componentDidMount = noop,
@@ -70,14 +66,14 @@ export default function keepAliveDecorator({
       componentDidActivate = noop,
       componentWillUnactivate = noop,
       componentWillUnmount = noop,
-    } = Component.prototype;
+    } = WrappedComponent.prototype;
     const displayName = (name || getDisplayName(Component)) as any;
 
     if (!displayName) {
       warn('[React Keep Alive] Each component must have a name, which can be the component\'s displayName or name static property. You can also configure name when keepAlive decorates the component.');
     }
 
-    Component.prototype.componentDidMount = function () {
+    WrappedComponent.prototype.componentDidMount = function () {
       const {
         _container,
         keepAlive,
@@ -95,10 +91,28 @@ export default function keepAliveDecorator({
       eventEmitter.on([identification, START_MOUNTING_DOM], cb);
       componentDidMount.call(this);
       if (keepAlive) {
-        componentDidActivate.call(this);
+        this.componentDidActivate();
       }
     };
-    Component.prototype.componentDidUpdate = function () {
+    WrappedComponent.prototype.componentDidActivate = function () {
+      const {
+        _container,
+      } = this.props;
+      const {
+        identification,
+        eventEmitter,
+      } = _container;
+      componentDidActivate.call(this);
+      eventEmitter.on(
+        [identification, COMMAND.CURRENT_UNMOUNT],
+        this._bindUnmount = this.componentWillUnmount.bind(this),
+      );
+      eventEmitter.on(
+        [identification, COMMAND.CURRENT_UNACTIVATE],
+        this._bindUnactivate = this.componentWillUnactivate.bind(this),
+      );
+    };
+    WrappedComponent.prototype.componentDidUpdate = function () {
       componentDidUpdate.call(this);
       const {
         _container,
@@ -111,14 +125,14 @@ export default function keepAliveDecorator({
         notNeedActivate();
         mount.call(this);
         this._unmounted = false;
-        componentDidActivate.call(this);
+        this.componentDidActivate();
       }
     };
-    Component.prototype.componentWillUnactivate = function () {
+    WrappedComponent.prototype.componentWillUnactivate = function () {
       componentWillUnactivate.call(this);
       unmount.call(this);
     };
-    Component.prototype.componentWillUnmount = function () {
+    WrappedComponent.prototype.componentWillUnmount = function () {
       // Because we will manually call the componentWillUnmount lifecycle
       // so we need to prevent it from firing multiple times
       if (!this._unmounted) {
@@ -149,9 +163,12 @@ export default function keepAliveDecorator({
           storeElement,
           cache,
           setLifecycle,
+          eventEmitter,
         },
       } = this.props;
       const {renderElement, ifStillActivate, reactivate} = cache[identification];
+      eventEmitter.off([identification, COMMAND.CURRENT_UNMOUNT], this._bindUnmount);
+      eventEmitter.off([identification, COMMAND.CURRENT_UNACTIVATE], this._bindUnactivate);
       setLifecycle(LIFECYCLE.UNMOUNTED);
       changePositionByComment(identification, storeElement, renderElement);
       if (ifStillActivate) {
@@ -161,8 +178,6 @@ export default function keepAliveDecorator({
 
     class TriggerLifecycleContainer extends React.PureComponent<ITriggerLifecycleContainerProps> {
       private identification: string;
-
-      private ref: any;
 
       private activated = false;
 
@@ -205,17 +220,13 @@ export default function keepAliveDecorator({
         } = this.props;
         const keepAlive = getCombinedKeepAlive();
         if (!keepAlive || !isExisted()) {
-          if (this.ref) {
-            this.ref.componentWillUnmount();
-          }
+          eventEmitter.emit([this.identification, COMMAND.CURRENT_UNMOUNT]);
           eventEmitter.emit([this.identification, COMMAND.UNMOUNT]);
         }
         // When the Provider components are unmounted, the cache is not needed,
         // so you don't have to execute the componentWillUnactivate lifecycle.
         if (keepAlive && isExisted()) {
-          if (this.ref) {
-            this.ref.componentWillUnactivate();
-          }
+          eventEmitter.emit([this.identification, COMMAND.CURRENT_UNACTIVATE]);
           eventEmitter.emit([this.identification, COMMAND.UNACTIVATE]);
         }
       }
@@ -243,16 +254,6 @@ export default function keepAliveDecorator({
 
       private setLifecycle = (lifecycle: LIFECYCLE) => {
         this.lifecycle = lifecycle;
-      }
-
-      private setRef = (ref: any) => {
-        this.ref = ref;
-        const {
-          forwardedRef,
-        } = this.props;
-        if (forwardedRef) {
-          (forwardedRef as any)(ref);
-        }
       }
 
       public render() {
@@ -284,7 +285,6 @@ export default function keepAliveDecorator({
           activated,
           getLifecycle,
           setLifecycle,
-          setRef,
           identification,
           ifStillActivate,
         } = this;
@@ -324,7 +324,7 @@ export default function keepAliveDecorator({
                 <Component
                   {...wrapperProps}
                   keepAlive={keepAlive}
-                  ref={setRef}
+                  ref={forwardedRef as React.Ref<{}>}
                   _container={{
                     isNeedActivate,
                     notNeedActivate,
@@ -476,7 +476,7 @@ export default function keepAliveDecorator({
       ));
     }
 
-    (KeepAlive as any).WrappedComponent = Component;
+    (KeepAlive as any).WrappedComponent = WrappedComponent;
     KeepAlive.displayName = `${keepAliveDisplayName}(${displayName})`;
     return hoistNonReactStatics(KeepAlive, Component);
   };

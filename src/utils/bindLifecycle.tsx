@@ -6,13 +6,7 @@ import withIdentificationContextConsumer from './withIdentificationContextConsum
 import getDisplayName from './getDisplayName';
 
 export default function bindLifecycle<P = any>(Component: React.ComponentType<P>) {
-  const {
-    WrappedComponent,
-    wrappedComponent,
-  } = Component as any;
-  if (WrappedComponent || wrappedComponent) {
-    Component = WrappedComponent || wrappedComponent;
-  }
+  const WrappedComponent = (Component as any).WrappedComponent || (Component as any).wrappedComponent || Component;
 
   const {
     componentDidMount = noop,
@@ -20,9 +14,9 @@ export default function bindLifecycle<P = any>(Component: React.ComponentType<P>
     componentDidActivate = noop,
     componentWillUnactivate = noop,
     componentWillUnmount = noop,
-  } = Component.prototype;
+  } = WrappedComponent.prototype;
 
-  Component.prototype.componentDidMount = function () {
+  WrappedComponent.prototype.componentDidMount = function () {
     componentDidMount.call(this);
     this._needActivate = false;
     const {
@@ -59,14 +53,14 @@ export default function bindLifecycle<P = any>(Component: React.ComponentType<P>
       true,
     );
   };
-  Component.prototype.componentDidUpdate = function () {
+  WrappedComponent.prototype.componentDidUpdate = function () {
     componentDidUpdate.call(this);
     if (this._needActivate) {
       this._needActivate = false;
       componentDidActivate.call(this);
     }
   };
-  Component.prototype.componentWillUnmount = function () {
+  WrappedComponent.prototype.componentWillUnmount = function () {
     if (!this._unmounted) {
       componentWillUnmount.call(this);
     }
@@ -121,7 +115,7 @@ export default function bindLifecycle<P = any>(Component: React.ComponentType<P>
     <BindLifecycleHOC {...props} forwardRef={ref} />
   ));
 
-  (BindLifecycle as any).WrappedComponent = Component;
+  (BindLifecycle as any).WrappedComponent = WrappedComponent;
   BindLifecycle.displayName = `bindLifecycle(${getDisplayName(Component)})`;
   return hoistNonReactStatics(
     BindLifecycle,
