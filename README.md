@@ -6,6 +6,7 @@ Package will allow components to maintain their status, to avoid repeated re-ren
 - ✅wrappedComponent
 - document
 - test
+- <KeepAlive>
 
 ## Installation
 React Keep Alive requires React 16.3 or later.
