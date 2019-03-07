@@ -1,6 +1,8 @@
 import React from 'react';
+import {keepAlive, bindLifecycle} from '../../../es';
 
-export default class Test extends React.Component {
+@keepAlive()
+class B extends React.Component {
   componentWillMount() {
     console.log('B componentWillMount');
   }
@@ -36,3 +38,5 @@ export default class Test extends React.Component {
     );
   }
 }
+
+export default B;

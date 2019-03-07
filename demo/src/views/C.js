@@ -1,6 +1,7 @@
 import React from 'react';
+import {keepAlive} from '../../../es';
 
-export default class Test extends React.Component {
+class C extends React.Component {
   componentWillMount() {
     console.log('C componentWillMount');
   }
@@ -36,3 +37,5 @@ export default class Test extends React.Component {
     );
   }
 }
+
+export default keepAlive()(C);

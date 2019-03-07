@@ -58,22 +58,19 @@ export default function keepAliveDecorator({
   forwardRef = false,
 }: IOptions = {}) {
   return (Component: React.ComponentType<IComponentProps>) => {
-    const WrappedComponent = (Component as any).WrappedComponent || (Component as any).wrappedComponent || Component;
-
     const {
       componentDidMount = noop,
       componentDidUpdate = noop,
-      componentDidActivate = noop,
       componentWillUnactivate = noop,
       componentWillUnmount = noop,
-    } = WrappedComponent.prototype;
+    } = Component.prototype;
     const displayName = (name || getDisplayName(Component)) as any;
 
     if (!displayName) {
       warn('[React Keep Alive] Each component must have a name, which can be the component\'s displayName or name static property. You can also configure name when keepAlive decorates the component.');
     }
 
-    WrappedComponent.prototype.componentDidMount = function () {
+    Component.prototype.componentDidMount = function () {
       const {
         _container,
         keepAlive,
@@ -86,6 +83,7 @@ export default function keepAliveDecorator({
       notNeedActivate();
       const cb = () => {
         mount.call(this);
+        listen.call(this);
         eventEmitter.off([identification, START_MOUNTING_DOM], cb);
       };
       eventEmitter.on([identification, START_MOUNTING_DOM], cb);
@@ -94,25 +92,7 @@ export default function keepAliveDecorator({
         this.componentDidActivate();
       }
     };
-    WrappedComponent.prototype.componentDidActivate = function () {
-      const {
-        _container,
-      } = this.props;
-      const {
-        identification,
-        eventEmitter,
-      } = _container;
-      componentDidActivate.call(this);
-      eventEmitter.on(
-        [identification, COMMAND.CURRENT_UNMOUNT],
-        this._bindUnmount = this.componentWillUnmount.bind(this),
-      );
-      eventEmitter.on(
-        [identification, COMMAND.CURRENT_UNACTIVATE],
-        this._bindUnactivate = this.componentWillUnactivate.bind(this),
-      );
-    };
-    WrappedComponent.prototype.componentDidUpdate = function () {
+    Component.prototype.componentDidUpdate = function () {
       componentDidUpdate.call(this);
       const {
         _container,
@@ -124,21 +104,24 @@ export default function keepAliveDecorator({
       if (isNeedActivate()) {
         notNeedActivate();
         mount.call(this);
+        listen.call(this);
         this._unmounted = false;
         this.componentDidActivate();
       }
     };
-    WrappedComponent.prototype.componentWillUnactivate = function () {
+    Component.prototype.componentWillUnactivate = function () {
       componentWillUnactivate.call(this);
       unmount.call(this);
+      unlisten.call(this);
     };
-    WrappedComponent.prototype.componentWillUnmount = function () {
+    Component.prototype.componentWillUnmount = function () {
       // Because we will manually call the componentWillUnmount lifecycle
       // so we need to prevent it from firing multiple times
       if (!this._unmounted) {
         this._unmounted = true;
         componentWillUnmount.call(this);
         unmount.call(this);
+        unlisten.call(this);
       }
     };
 
@@ -163,17 +146,42 @@ export default function keepAliveDecorator({
           storeElement,
           cache,
           setLifecycle,
-          eventEmitter,
         },
       } = this.props;
       const {renderElement, ifStillActivate, reactivate} = cache[identification];
-      eventEmitter.off([identification, COMMAND.CURRENT_UNMOUNT], this._bindUnmount);
-      eventEmitter.off([identification, COMMAND.CURRENT_UNACTIVATE], this._bindUnactivate);
       setLifecycle(LIFECYCLE.UNMOUNTED);
       changePositionByComment(identification, storeElement, renderElement);
       if (ifStillActivate) {
         reactivate();
       }
+    }
+
+    function listen(this: any) {
+      const {
+        _container: {
+          identification,
+          eventEmitter,
+        },
+      } = this.props;
+      eventEmitter.on(
+        [identification, COMMAND.CURRENT_UNMOUNT],
+        this._bindUnmount = this.componentWillUnmount.bind(this),
+      );
+      eventEmitter.on(
+        [identification, COMMAND.CURRENT_UNACTIVATE],
+        this._bindUnactivate = this.componentWillUnactivate.bind(this),
+      );
+    }
+
+    function unlisten(this: any) {
+      const {
+        _container: {
+          identification,
+          eventEmitter,
+        },
+      } = this.props;
+      eventEmitter.off([identification, COMMAND.CURRENT_UNMOUNT], this._bindUnmount);
+      eventEmitter.off([identification, COMMAND.CURRENT_UNACTIVATE], this._bindUnactivate);
     }
 
     class TriggerLifecycleContainer extends React.PureComponent<ITriggerLifecycleContainerProps> {
@@ -476,7 +484,7 @@ export default function keepAliveDecorator({
       ));
     }
 
-    (KeepAlive as any).WrappedComponent = WrappedComponent;
+    (KeepAlive as any).WrappedComponent = Component;
     KeepAlive.displayName = `${keepAliveDisplayName}(${displayName})`;
     return hoistNonReactStatics(KeepAlive, Component);
   };
