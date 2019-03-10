@@ -5,7 +5,7 @@ import {COMMAND} from './keepAlive';
 import withIdentificationContextConsumer from './withIdentificationContextConsumer';
 import getDisplayName from './getDisplayName';
 
-export default function bindLifecycle<P = any>(Component: React.ComponentType<P>) {
+export default function bindLifecycle<P = any>(Component: React.ComponentClass<P>) {
   const WrappedComponent = (Component as any).WrappedComponent || (Component as any).wrappedComponent || Component;
 
   const {
@@ -111,7 +111,7 @@ export default function bindLifecycle<P = any>(Component: React.ComponentType<P>
         : null
     ),
   );
-  const BindLifecycle = React.forwardRef((props, ref) => (
+  const BindLifecycle = React.forwardRef((props: P, ref) => (
     <BindLifecycleHOC {...props} forwardRef={ref} />
   ));
 

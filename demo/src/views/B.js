@@ -1,7 +1,7 @@
 import React from 'react';
-import {keepAlive, bindLifecycle} from '../../../es';
+import {bindLifecycle} from '../../../es';
 
-@keepAlive()
+@bindLifecycle
 class B extends React.Component {
   componentWillMount() {
     console.log('B componentWillMount');

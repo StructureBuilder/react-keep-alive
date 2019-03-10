@@ -1,6 +1,7 @@
 import React from 'react';
-import {keepAlive} from '../../../es';
+import {bindLifecycle} from '../../../es';
 
+@bindLifecycle
 class C extends React.Component {
   componentWillMount() {
     console.log('C componentWillMount');
@@ -38,4 +39,4 @@ class C extends React.Component {
   }
 }
 
-export default keepAlive()(C);
+export default C;

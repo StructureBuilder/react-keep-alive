@@ -1,5 +1,5 @@
 import React from 'react';
-import {keepAlive, bindLifecycle} from '../../../es';
+import {bindLifecycle} from '../../../es';
 
 @bindLifecycle
 class Content extends React.Component {
@@ -40,7 +40,7 @@ class Content extends React.Component {
   }
 }
 
-@keepAlive()
+@bindLifecycle
 class Test extends React.Component {
   state = {
     index: 0,

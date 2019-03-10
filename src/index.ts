@@ -1,9 +1,9 @@
 import Provider from './components/Provider';
-import keepAlive from './utils/keepAlive';
+import KeepAlive from './components/KeepAlive';
 import bindLifecycle from './utils/bindLifecycle';
 
 export {
   Provider,
-  keepAlive,
+  KeepAlive,
   bindLifecycle,
 };

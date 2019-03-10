@@ -7,7 +7,7 @@ import {warn} from '../utils/debug';
 import createUniqueIdentification from '../utils/createUniqueIdentification';
 import createStoreElement from '../utils/createStoreElement';
 
-export const keepAliveProviderTypeName = 'KeepAliveProvider';
+export const keepAliveProviderTypeName = '$$KeepAliveProvider';
 export const START_MOUNTING_DOM = 'startMountingDOM';
 
 export enum LIFECYCLE {
@@ -20,7 +20,6 @@ export interface ICacheItem {
   children: React.ReactNode;
   keepAlive: boolean;
   lifecycle: LIFECYCLE;
-  key?: string | null;
   renderElement?: HTMLElement;
   activated?: boolean;
   ifStillActivate?: boolean;
@@ -87,10 +86,6 @@ export default class KeepAliveProvider extends React.PureComponent<IKeepAlivePro
   public setCache = (identification: string, value: ICacheItem) => {
     const {cache, keys} = this;
     const currentCache = cache[identification];
-    const key = currentCache && currentCache.key;
-    if (key && value.key && key !== (value.key as unknown)) {
-      warn('[React Keep Alive] Cached components have duplicates.');
-    }
     if (!currentCache) {
       keys.push(identification);
     }
@@ -99,6 +94,10 @@ export default class KeepAliveProvider extends React.PureComponent<IKeepAlivePro
       ...value,
     };
     this.forceUpdate();
+  }
+
+  public componentDidCatch() {
+    warn('[React Keep Alive] Cached components have duplicates. Please check the <KeepAlive> component of the key duplication!');
   }
 
   // private getMax = () => {
@@ -126,7 +125,6 @@ export default class KeepAliveProvider extends React.PureComponent<IKeepAlivePro
     const {cache} = this;
     this.cache[identification] = {
       ...cache[identification],
-      key: null,
       activated: false,
       lifecycle: LIFECYCLE.UNMOUNTED,
     };

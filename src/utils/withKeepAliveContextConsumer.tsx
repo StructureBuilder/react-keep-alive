@@ -5,17 +5,19 @@ import getDisplayName from './getDisplayName';
 
 type IKeepAliveContextProps = IKeepAliveProviderImpl & IKeepAliveProviderProps;
 
-export interface IKeepAliveContextComponentProps {
+export interface IKeepAliveContextConsumerComponentProps {
   _keepAliveContextProps: IKeepAliveContextProps;
 }
 
-export default function withKeepAliveContextConsumer<P = any>(Component: React.ComponentType<IKeepAliveContextComponentProps & P>) {
-  const NewComponent = (props: P) => (
+export const WithKeepAliveContextConsumerDisplayName = 'withKeepAliveContextConsumer';
+
+export default function withKeepAliveContextConsumer<P = any>(Component: React.ComponentType<IKeepAliveContextConsumerComponentProps & P>) {
+  const WithKeepAliveContextConsumer = (props: P) => (
     <KeepAliveContext.Consumer>
       {(contextProps: IKeepAliveContextProps) => <Component _keepAliveContextProps={contextProps} {...props} />}
     </KeepAliveContext.Consumer>
   );
 
-  NewComponent.displayName = `withKeepAliveContextConsumer(${getDisplayName(Component)})`;
-  return NewComponent;
+  WithKeepAliveContextConsumer.displayName = `${WithKeepAliveContextConsumerDisplayName}(${getDisplayName(Component)})`;
+  return WithKeepAliveContextConsumer;
 }

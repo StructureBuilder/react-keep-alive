@@ -6,7 +6,7 @@ import {
   Link,
   BrowserRouter as Router,
 } from 'react-router-dom';
-import {Provider} from '../../es';
+import {Provider, KeepAlive} from '../../es';
 import A from './views/A';
 import B from './views/B';
 import C from './views/C';
@@ -58,18 +58,24 @@ class App extends React.Component {
           <Route
             path="/a"
             render={() => (
-              <React.Fragment>
-                <A keepAlive={toggle} />
-              </React.Fragment>
+              <KeepAlive key="A" disabled={!toggle}>
+                <A />
+              </KeepAlive>
             )}
           />
           <Route
             path="/b"
-            render={() => <B />}
+            render={() => (
+              <B />
+            )}
           />
           <Route
             path="/c"
-            render={() => <C />}
+            render={() => (
+              <KeepAlive key="C">
+                <C />
+              </KeepAlive>
+            )}
           />
         </Switch>
       </div>

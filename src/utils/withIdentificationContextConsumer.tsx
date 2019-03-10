@@ -11,17 +11,19 @@ export interface IIdentificationContextProps {
   isExisted: () => boolean;
 }
 
-export interface IIdentificationContextComponentProps {
+export interface IIdentificationContextConsumerComponentProps {
   _identificationContextProps: IIdentificationContextProps;
 }
 
-export default function withIdentificationContextConsumer<P = any>(Component: React.ComponentType<IIdentificationContextComponentProps & P>) {
-  const NewComponent = (props: P) => (
+export const withIdentificationContextConsumerDisplayName = 'withIdentificationContextConsumer';
+
+export default function withIdentificationContextConsumer<P = any>(Component: React.ComponentType<IIdentificationContextConsumerComponentProps & P>) {
+  const WithIdentificationContextConsumer = (props: P) => (
     <IdentificationContext.Consumer>
       {(contextProps: IIdentificationContextProps) => <Component _identificationContextProps={contextProps} {...props} />}
     </IdentificationContext.Consumer>
   );
 
-  NewComponent.displayName = `withIdentificationContextConsumer(${getDisplayName(Component)})`;
-  return NewComponent;
+  WithIdentificationContextConsumer.displayName = `${withIdentificationContextConsumerDisplayName}(${getDisplayName(Component)})`;
+  return WithIdentificationContextConsumer;
 }

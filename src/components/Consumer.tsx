@@ -3,7 +3,6 @@ import Comment from './Comment';
 import {LIFECYCLE, ICache, ICacheItem} from './Provider';
 import {warn} from '../utils/debug';
 import findDOMNodeByFiberNode from '../utils/findDOMNodeByFiberNode';
-import createUniqueIdentification from '../utils/createUniqueIdentification';
 
 interface IConsumerProps {
   children: React.ReactNode;
@@ -18,9 +17,6 @@ class Consumer extends React.PureComponent<IConsumerProps> {
   private renderElement: HTMLElement;
 
   private identification: string = this.props.identification;
-
-  // This attribute is designed to prevent duplicates of the identification of KeepAlive components.
-  private key: string = createUniqueIdentification();
 
   constructor(props: IConsumerProps, ...args: any) {
     super(props, ...args);
@@ -43,7 +39,6 @@ class Consumer extends React.PureComponent<IConsumerProps> {
       children,
       keepAlive,
       lifecycle: LIFECYCLE.MOUNTED,
-      key: this.key,
       renderElement: this.renderElement,
       activated: true,
     });
