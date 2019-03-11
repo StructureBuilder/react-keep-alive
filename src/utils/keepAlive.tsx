@@ -39,7 +39,7 @@ interface ITriggerLifecycleContainerProps extends IKeepAliveContextConsumerCompo
   getCombinedKeepAlive: () => boolean;
 }
 
-export default (Component: React.ComponentType<any>) => {
+export default function keepAliveDecorator<P = any>(Component: React.ComponentType<any>): React.ComponentType<P> {
   const {
     componentDidMount = noop,
     componentDidUpdate = noop,
@@ -50,12 +50,12 @@ export default (Component: React.ComponentType<any>) => {
   Component.prototype.componentDidMount = function () {
     const {
       _container,
-      keepAlive,
     } = this.props;
     const {
       notNeedActivate,
       identification,
       eventEmitter,
+      keepAlive,
     } = _container;
     notNeedActivate();
     const cb = () => {
@@ -300,7 +300,6 @@ export default (Component: React.ComponentType<any>) => {
             >
               <Component
                 {...wrapperProps}
-                keepAlive={keepAlive}
                 _container={{
                   isNeedActivate,
                   notNeedActivate,
@@ -308,6 +307,7 @@ export default (Component: React.ComponentType<any>) => {
                   eventEmitter,
                   identification,
                   storeElement,
+                  keepAlive,
                   cache,
                 }}
               />
@@ -449,4 +449,4 @@ export default (Component: React.ComponentType<any>) => {
   ) as any;
 
   return hoistNonReactStatics(KeepAlive, Component);
-};
+}

@@ -22,7 +22,7 @@ class Consumer extends React.PureComponent<IConsumerProps> {
     super(props, ...args);
     const {cache, setCache, children} = props;
     if (!cache || !setCache) {
-      warn('[React Keep Alive] <KeepAlive> component must be in the <Provider> component.');
+      warn('[React Keep Alive] You should not use <KeepAlive> outside a <Provider>.');
     }
     React.Children.only(children);
   }

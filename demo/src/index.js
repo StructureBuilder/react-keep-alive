@@ -66,7 +66,8 @@ class App extends React.Component {
           <Route
             path="/b"
             render={() => (
-              <B />
+              <KeepAlive key="B"><B /></KeepAlive>
+
             )}
           />
           <Route

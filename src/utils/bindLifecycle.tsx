@@ -1,6 +1,7 @@
 import React from 'react';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import noop from './noop';
+import {warn} from './debug';
 import {COMMAND} from './keepAlive';
 import withIdentificationContextConsumer from './withIdentificationContextConsumer';
 import getDisplayName from './getDisplayName';
@@ -94,22 +95,24 @@ export default function bindLifecycle<P = any>(Component: React.ComponentClass<P
         keepAlive,
       },
       ...wrapperProps
-    }) => (
-      identification
-        ? (
-          <Component
-            {...wrapperProps}
-            keepAlive={keepAlive}
-            ref={forwardRef || noop}
-            _container={{
-              identification,
-              eventEmitter,
-              activated,
-            }}
-          />
-        )
-        : null
-    ),
+    }) => {
+      if (!identification) {
+        warn('[React Keep Alive] You should not use bindLifecycle outside a <KeepAlive>.');
+        return null;
+      }
+      return (
+        <Component
+          {...wrapperProps}
+          ref={forwardRef || noop}
+          _container={{
+            identification,
+            eventEmitter,
+            activated,
+            keepAlive,
+          }}
+        />
+      );
+    },
   );
   const BindLifecycle = React.forwardRef((props: P, ref) => (
     <BindLifecycleHOC {...props} forwardRef={ref} />

@@ -31,4 +31,4 @@ class KeepAlive extends React.PureComponent<IKeepAliveProps> {
   }
 }
 
-export default keepAlive(KeepAlive) as React.ComponentClass<IKeepAliveProps>;
+export default keepAlive<IKeepAliveProps>(KeepAlive);
