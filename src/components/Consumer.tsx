@@ -1,7 +1,6 @@
 import React from 'react';
 import Comment from './Comment';
 import {LIFECYCLE, ICache, ICacheItem} from './Provider';
-import {warn} from '../utils/debug';
 import findDOMNodeByFiberNode from '../utils/findDOMNodeByFiberNode';
 
 interface IConsumerProps {
@@ -17,15 +16,6 @@ class Consumer extends React.PureComponent<IConsumerProps> {
   private renderElement: HTMLElement;
 
   private identification: string = this.props.identification;
-
-  constructor(props: IConsumerProps, ...args: any) {
-    super(props, ...args);
-    const {cache, setCache, children} = props;
-    if (!cache || !setCache) {
-      warn('[React Keep Alive] You should not use <KeepAlive> outside a <Provider>.');
-    }
-    React.Children.only(children);
-  }
 
   public componentDidMount() {
     const {

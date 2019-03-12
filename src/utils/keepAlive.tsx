@@ -173,6 +173,18 @@ export default function keepAliveDecorator<P = any>(Component: React.ComponentTy
 
     private lifecycle = LIFECYCLE.MOUNTED;
 
+    constructor(props: ITriggerLifecycleContainerProps, ...args: any) {
+      super(props, ...args);
+      const {
+        _keepAliveContextProps: {
+          cache,
+        },
+      } = props;
+      if (!cache) {
+        warn('[React Keep Alive] You should not use <KeepAlive> outside a <Provider>.');
+      }
+    }
+
     public componentDidMount() {
       if (!this.ifStillActivate) {
         this.activate();
