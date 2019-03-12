@@ -437,7 +437,7 @@ export default function keepAliveDecorator<P = any>(Component: React.ComponentTy
         warn('[React Keep Alive] <KeepAlive> components must have key.');
         return null;
       }
-      const newKeepAlive = getKeepAlive(propKey, include, exclude, !disabled);
+      const newKeepAlive = getKeepAlive(propKey, include, exclude, disabled);
       this.combinedKeepAlive = getLifecycle === undefined || getLifecycle() === LIFECYCLE.UPDATING
         ? newKeepAlive
         : identification

@@ -17,10 +17,10 @@ export default function getKeepAlive(
   name: string,
   include?: Pattern,
   exclude?: Pattern,
-  keepAlive?: boolean
+  disabled?: boolean
 ) {
-  if (keepAlive !== undefined) {
-    return keepAlive;
+  if (disabled !== undefined) {
+    return !disabled;
   }
   if (
     (include && (!name || !matches(include, name))) ||
