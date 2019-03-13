@@ -3,7 +3,6 @@ Package will allow components to maintain their status, to avoid repeated re-ren
 
 
 ## TODO
-- MAX
 - test
 
 
@@ -258,7 +257,7 @@ ReactDOM.render(
 );
 ```
 
-##### Usage with `include` props of `<Provider>` 
+##### Usage with `include` props of `<Provider>`
 ```JavaScript
 import React from 'react';
 import ReactDOM from 'react-dom';
