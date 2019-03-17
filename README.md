@@ -1,10 +1,21 @@
-# React Keep Alive
-Package will allow components to maintain their status, to avoid repeated re-rendering.
+<p align="center">
+  <a href="https://github.com/Sam618/react-keep-alive">
+    <img width="120" src="./assets/logo.svg">
+  </a>
+</p>
 
+<h1 align="center">React Keep Alive</h1>
+<div align="center">
 
-## TODO
-- test
+  [![npm](https://img.shields.io/npm/v/react-keep-alive.svg?style=for-the-badge)](https://www.npmjs.com/package/react-keep-alive) [![Travis (.org)](https://img.shields.io/travis/Sam618/react-keep-alive.svg?style=for-the-badge)](https://travis-ci.org/Sam618/react-keep-alive.svg?branch=master) [![license](https://img.shields.io/npm/l/react-keep-alive.svg?style=for-the-badge)](https://github.com/Sam618/react-keep-alive/blob/master/LICENSE) [![npm bundle size (minified + gzip)](https://img.shields.io/bundlephobia/minzip/react-keep-alive.svg?style=for-the-badge)](https://www.npmjs.com/package/react-keep-alive) [![downloads](https://img.shields.io/npm/dm/react-keep-alive.svg?style=for-the-badge)](https://www.npmjs.com/package/react-keep-alive) [![typescript](https://img.shields.io/badge/language-typescript-blue.svg?style=for-the-badge)](https://www.typescriptlang.org/)
 
+  <p>A component that maintains component state and avoids repeated re-rendering.</p>
+
+  <div style="width: 100px; text-align: left;">
+    <div>English | <a href="./README.zh-CN.md">中文</a></div>
+    <div><a href="./ONLINE_EDITOR.md">Online Editor</a></div>
+  </div>
+</div>
 
 ## Installation
 React Keep Alive requires React 16.3 or later.
@@ -26,73 +37,27 @@ import {
   Provider,
   KeepAlive,
 } from 'react-keep-alive';
-
-class Test extends React.Component {
-  state = {
-    count: 0,
-  };
-
-  handleClick = () => {
-    this.setState(({count}) => ({
-      count: count + 1,
-    }));
-  }
-
-  render() {
-    const {count} = this.state;
-    return (
-      <div>
-        <h1>This is {`<Test>`}</h1>
-        <p>Please feel free to click the button, then hide this component, and the status will be retained again.</p>
-        <button onClick={this.handleClick}>Click me(count: {count})</button>
-      </div>
-    );
-  }
-}
-
-class App extends React.Component {
-  state = {
-    hidden: false,
-  };
-
-  handleClick = () => {
-    this.setState(({hidden}) => ({
-      hidden: !hidden,
-    }));
-  }
-
-  render() {
-    const {hidden} = this.state;
-    return (
-      <div>
-        <div>
-          Clicking the button will hide the component, but the status will be preserved.
-        </div>
-        <button onClick={this.handleClick}>Click me(hidden: {hidden.toString()})</button>
-        <div>
-          {
-            !hidden
-              ? (
-                // Must have a key, and it is unique
-                <KeepAlive key="Test">
-                  <Test />
-                </KeepAlive>
-              )
-              : null
-          }
-        </div>
-      </div>
-    );
-  }
-}
+import Test from './views/Test';
 
 ReactDOM.render(
   <Provider>
-    <App />
+    <KeepAlive key="Test">
+      <Test />
+    </KeepAlive>
   </Provider>,
   document.getElementById('root'),
 );
 ```
+
+
+## Why do you need this component?
+If you've used [Vue](https://vuejs.org/), you know that it has a very good component ([keep-alive](https://vuejs.org/v2/guide/components-dynamic-async.html)) that keeps the state of the component to avoid repeated re-rendering.
+
+Sometimes, we want the list page to cache the page state after the list page enters the detail page. When the detail page returns to the list page, the list page is still the same as before the switch.
+
+Oh, this is actually quite difficult to achieve, because the components in React cannot be reused once they are uninstalled. Two solutions are proposed in [issue #12039](https://github.com/facebook/react/issues/12039). By using the style switch component display (display:none | block;), this can cause problems, such as when you switch components, you can't use animations; or use data flow management tools like Mobx and Redux, but this is too much trouble.
+
+In the end, I implemented this effect through the [React.createPortal API](https://reactjs.org/docs/portals.html). `react-keep-alive` has two main components `<Provider>` and `<KeepAlive>`. The `<Provider>` is responsible for saving the component's cache and rendering the cached component outside of the application via the React.createPortal API before processing. The cached components must be placed in `<KeepAlive>`, and `<KeepAlive>` will mount the components that are cached outside the application to the location that really needs to be displayed.
 
 
 ## API Reference
@@ -198,47 +163,14 @@ class One extends React.Component {
   }
 }
 
-class Two extends React.Component {
-  render() {
-    return (
-      <div>This is Two.</div>
-    );
-  }
-}
-
 class App extends React.Component {
-  handleActivate = () => {
-    console.log('One activated');
-  }
-
-  handleUnactivate = () => {
-    console.log('One unactivated');
-  }
-
   render() {
     return (
       <div>
-        <ul>
-          <li>
-            <Link to="/one">one</Link>
-          </li>
-          <li>
-            <Link to="/two">two</Link>
-          </li>
-        </ul>
         <Switch>
           <Route path="/one">
-            <KeepAlive
-              key="One"
-              onActivate={this.handleActivate}
-              onUnactivate={this.handleUnactivate}
-            >
+            <KeepAlive key="One">
               <One />
-            </KeepAlive>
-          </Route>
-          <Route path="/two">
-            <KeepAlive key="Two">
-              <Two />
             </KeepAlive>
           </Route>
         </Switch>
@@ -270,19 +202,9 @@ import {
 import {
   Provider,
   KeepAlive,
-  bindLifecycle,
 } from 'react-keep-alive';
 
-@bindLifecycle
 class One extends React.Component {
-  componentDidMount() {
-    console.log('One componentDidMount');
-  }
-
-  componentWillUnmount() {
-    console.log('One componentWillUnmount');
-  }
-
   render() {
     return (
       <div>This is One.</div>
@@ -290,47 +212,14 @@ class One extends React.Component {
   }
 }
 
-class Two extends React.Component {
-  render() {
-    return (
-      <div>This is Two.</div>
-    );
-  }
-}
-
 class App extends React.Component {
-  handleActivate = () => {
-    console.log('One activated');
-  }
-
-  handleUnactivate = () => {
-    console.log('One unactivated');
-  }
-
   render() {
     return (
       <div>
-        <ul>
-          <li>
-            <Link to="/one">one</Link>
-          </li>
-          <li>
-            <Link to="/two">two</Link>
-          </li>
-        </ul>
         <Switch>
           <Route path="/one">
-            <KeepAlive
-              key="One"
-              onActivate={this.handleActivate}
-              onUnactivate={this.handleUnactivate}
-            >
+            <KeepAlive key="One">
               <One />
-            </KeepAlive>
-          </Route>
-          <Route path="/two">
-            <KeepAlive key="Two">
-              <Two />
             </KeepAlive>
           </Route>
         </Switch>
