@@ -47,7 +47,6 @@ export interface IKeepAliveProviderProps {
   exclude?: string | string[] | RegExp;
 }
 
-// TODO: include max exclude
 export default class KeepAliveProvider extends React.PureComponent<IKeepAliveProviderProps> implements IKeepAliveProviderImpl {
   public static displayName = keepAliveProviderTypeName;
 
@@ -99,27 +98,6 @@ export default class KeepAliveProvider extends React.PureComponent<IKeepAlivePro
   public componentDidCatch() {
     warn('[React Keep Alive] Cached components have duplicates. Please check the <KeepAlive> component of the key duplication!');
   }
-
-  // private getMax = () => {
-  //   return this.props.max ? parseInt(this.props.max) : null;
-  // }
-
-  // private shiftKey = () => {
-  //   const max = this.getMax();
-  //   const {keys, cache} = this;
-  //   if (!max || keys.length <= max) {
-  //     return;
-  //   }
-  //   for (let i = 0; i < keys.length; i++) {
-  //     const key = keys[i];
-  //     const currentCache = cache[key];
-  //     if (currentCache && !currentCache.activated) {
-  //       keys.splice(i, 1);
-  //       delete cache[key];
-  //       return;
-  //     }
-  //   }
-  // }
 
   public unactivate = (identification: string) => {
     const {cache} = this;

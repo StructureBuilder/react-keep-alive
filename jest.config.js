@@ -11,6 +11,7 @@ module.exports = {
     "^.+\\.js$": "babel-jest",
     ".(ts|tsx)": "ts-jest",
   },
+  testURL: 'http://localhost:3002/',
   collectCoverage: true,
   coverageDirectory: './coverage',
 };
