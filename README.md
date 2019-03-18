@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/Sam618/react-keep-alive">
-    <img width="120" src="./assets/logo.svg">
+    <img width="120" src="https://github.com/Sam618/react-keep-alive/raw/master/assets/logo.png">
   </a>
 </p>
 
