@@ -55,7 +55,7 @@ If you've used [Vue](https://vuejs.org/), you know that it has a very good compo
 
 Sometimes, we want the list page to cache the page state after the list page enters the detail page. When the detail page returns to the list page, the list page is still the same as before the switch.
 
-Oh, this is actually quite difficult to achieve, because the components in React cannot be reused once they are uninstalled. Two solutions are proposed in [issue #12039](https://github.com/facebook/react/issues/12039). By using the style switch component display (display:none | block;), this can cause problems, such as when you switch components, you can't use animations; or use data flow management tools like Mobx and Redux, but this is too much trouble.
+Oh, this is actually quite difficult to achieve, because the components in React cannot be reused once they are uninstalled. Two solutions are proposed in [issue #12039](https://github.com/facebook/react/issues/12039). By using the style switch component display (`display: none | block;`), this can cause problems, such as when you switch components, you can't use animations; or use data flow management tools like Mobx and Redux, but this is too much trouble.
 
 In the end, I implemented this effect through the [React.createPortal API](https://reactjs.org/docs/portals.html). `react-keep-alive` has two main components `<Provider>` and `<KeepAlive>`. The `<Provider>` is responsible for saving the component's cache and rendering the cached component outside of the application via the React.createPortal API before processing. The cached components must be placed in `<KeepAlive>`, and `<KeepAlive>` will mount the components that are cached outside the application to the location that really needs to be displayed.
 
@@ -230,7 +230,7 @@ class App extends React.Component {
 
 ReactDOM.render(
   <Router>
-    <Provider include="Two">
+    <Provider include="One">
       <App />
     </Provider>
   </Router>,
