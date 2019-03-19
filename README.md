@@ -12,8 +12,8 @@
   <p>A component that maintains component state and avoids repeated re-rendering.</p>
 
   <div style="width: 100px; text-align: left;">
-    <div>English | <a href="./README.zh-CN.md">中文</a></div>
-    <div><a href="./ONLINE_EDITOR.md">Online Editor</a></div>
+    <div>English | <a href="https://github.com/Sam618/react-keep-alive/blob/master/README.zh-CN.md">中文</a></div>
+    <div><a href="https://github.com/Sam618/react-keep-alive/blob/master/ONLINE_EDITOR.md">Online Editor</a></div>
   </div>
 </div>
 
