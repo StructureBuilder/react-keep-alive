@@ -17,7 +17,13 @@
   </div>
 </div>
 
-## Installation
+
+## ✨ Features
+- **Alone**. Not based on React Router, so you can use it wherever you need to cache it.
+- **Easy**. You can easily use <KeepAlive> to wrap your components to keep them alive.
+- **Strong**. You can use animation and you will also get a new lifecycle.
+
+## 📦 Installation
 React Keep Alive requires React 16.3 or later.
 
 To use React Keep Alive with your React app:
@@ -27,7 +33,7 @@ npm install --save react-keep-alive
 ```
 
 
-## Usage
+## 🔨 Usage
 React Keep Alive provides `<Provider>`, you must use `<Provider>` to wrap the `<KeepAlive>` cache to take effect.
 
 ```JavaScript
@@ -50,7 +56,7 @@ ReactDOM.render(
 ```
 
 
-## Why do you need this component?
+## 💡 Why do you need this component?
 If you've used [Vue](https://vuejs.org/), you know that it has a very good component ([keep-alive](https://vuejs.org/v2/guide/components-dynamic-async.html)) that keeps the state of the component to avoid repeated re-rendering.
 
 Sometimes, we want the list page to cache the page state after the list page enters the detail page. When the detail page returns to the list page, the list page is still the same as before the switch.
@@ -60,7 +66,7 @@ Oh, this is actually quite difficult to achieve, because the components in React
 In the end, I implemented this effect through the [React.createPortal API](https://reactjs.org/docs/portals.html). `react-keep-alive` has two main components `<Provider>` and `<KeepAlive>`. The `<Provider>` is responsible for saving the component's cache and rendering the cached component outside of the application via the React.createPortal API before processing. The cached components must be placed in `<KeepAlive>`, and `<KeepAlive>` will mount the components that are cached outside the application to the location that really needs to be displayed.
 
 
-## API Reference
+## 📝 API Reference
 
 ### `Provider`
 Since the cached components need to be stored, the `<Provider>` must be rendered at the top of the application for the program to run properly.
@@ -267,13 +273,13 @@ class Test extends React.Component {
 }
 ```
 
-## Issues
+## 🐛 Issues
 If you find a bug, please file an issue on [our issue tracker on GitHub](https://github.com/Sam618/react-keep-alive/issues).
 
 
-## Changelog
+## 🏁 Changelog
 Changes are tracked in the [CHANGELOG.md](https://github.com/Sam618/react-keep-alive/blob/master/CHANGELOG.md).
 
 
-## License
+## 📄 License
 React Keep Alive is available under the [MIT](https://github.com/Sam618/react-keep-alive/blob/master/LICENSE) License.
