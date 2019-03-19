@@ -8,6 +8,7 @@
 <div align="center">
 
   [![npm](https://img.shields.io/npm/v/react-keep-alive.svg?style=for-the-badge)](https://www.npmjs.com/package/react-keep-alive) [![Travis (.org)](https://img.shields.io/travis/Sam618/react-keep-alive.svg?style=for-the-badge)](https://travis-ci.org/Sam618/react-keep-alive.svg?branch=master) [![license](https://img.shields.io/npm/l/react-keep-alive.svg?style=for-the-badge)](https://github.com/Sam618/react-keep-alive/blob/master/LICENSE) [![npm bundle size (minified + gzip)](https://img.shields.io/bundlephobia/minzip/react-keep-alive.svg?style=for-the-badge)](https://www.npmjs.com/package/react-keep-alive) [![downloads](https://img.shields.io/npm/dm/react-keep-alive.svg?style=for-the-badge)](https://www.npmjs.com/package/react-keep-alive) [![typescript](https://img.shields.io/badge/language-typescript-blue.svg?style=for-the-badge)](https://www.typescriptlang.org/)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FSam618%2Freact-keep-alive.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FSam618%2Freact-keep-alive?ref=badge_shield)
 
   <p>A component that maintains component state and avoids repeated re-rendering.</p>
 
@@ -17,6 +18,9 @@
   </div>
 </div>
 
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FSam618%2Freact-keep-alive.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FSam618%2Freact-keep-alive?ref=badge_large)
 
 ## ✨ Features
 - **Alone**. Not based on React Router, so you can use it wherever you need to cache it.
