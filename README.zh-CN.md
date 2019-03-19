@@ -17,7 +17,14 @@
   </div>
 </div>
 
-## 安装
+
+## ✨ 特征
+- **独立**。 不基于 React Router，因此您可以在任何需要缓存的地方使用它。
+- **简单**。 你可以轻松地使用 `<KeepAlive>` 包装你组件来使它们保持活力。
+- **强大**。 你可以使用动画，并且你还将得到新的生命周期。
+
+
+## 📦 安装
 React Keep Alive 最低支持 React 16.3 版本。
 
 在你的应用中安装 React Keep Alive：
@@ -27,7 +34,7 @@ npm install --save react-keep-alive
 ```
 
 
-## 使用
+## 🔨 使用
 React Keep Alive 提供了 `<Provider>`， 你必须把 `<KeepAlive>` 放在 `Provider` 里面。
 
 ```JavaScript
@@ -50,7 +57,7 @@ ReactDOM.render(
 ```
 
 
-## 为什么使用这个组件？
+## 💡 为什么使用这个组件？
 如果你用过 [Vue](https://vuejs.org/)，那肯定知道它有一个非常好用的组件（[keep-alive](https://vuejs.org/v2/guide/components-dynamic-async.html)）能够保持组件的状态来避免重复重渲染。
 
 有时，我们希望在列表页面进入详情页面后，缓存列表页面的状态；当从详情页面返回列表页面时，列表页面还是和切换前一样。
@@ -60,7 +67,7 @@ ReactDOM.render(
 最后，我通过 [React.createPortal API](https://reactjs.org/docs/portals.html) 实现了这个效果。`react-keep-alive` 有两个主要的组件 `<Provider>` 和 `<KeepAlive>`；`<Provider>` 负责保存组件的缓存，并在处理之前通过 `React.createPortal` API 将缓存的组件渲染在应用程序的外面。缓存的组件必须放在 `<KeepAlive>` 中，`<KeepAlive>` 会把在应用程序外面渲染的组件挂载到真正需要显示的位置。
 
 
-## API 参考
+## 📝 API 参考
 
 ### `Provider`
 因为需要存储缓存的组件，所以必须把 `<Provider>` 放在应用程序的最外面以使程序能够正常运行。
@@ -267,13 +274,13 @@ class Test extends React.Component {
 }
 ```
 
-## Issues
+## 🐛 Issues
 如果你发现了错误，请在 [我们 GitHub 的 Issues](https://github.com/Sam618/react-keep-alive/issues) 上提出问题。
 
 
-## Changelog
+## 🏁 Changelog
 在 [CHANGELOG.md](https://github.com/Sam618/react-keep-alive/blob/master/CHANGELOG.md) 中能够查看到所有的更新.
 
 
-## License
+## 📄 License
 React Keep Alive 使用了 [MIT](https://github.com/Sam618/react-keep-alive/blob/master/LICENSE) 许可.
