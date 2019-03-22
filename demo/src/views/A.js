@@ -1,7 +1,6 @@
 import React from 'react';
-import {bindLifecycle} from '../../../es';
+import {Provider, KeepAlive} from '../../../es';
 
-@bindLifecycle
 class Content extends React.Component {
   componentWillMount() {
     console.log('A Content componentWillMount');
@@ -40,7 +39,6 @@ class Content extends React.Component {
   }
 }
 
-@bindLifecycle
 class Test extends React.Component {
   state = {
     index: 0,
@@ -84,7 +82,14 @@ class Test extends React.Component {
       <div>
         <div>This is a.</div>
         <button onClick={this.handleClick}>click me({this.state.index})</button>
-        <Content />
+        {
+          this.state.index % 2 &&
+          <Provider>
+            <KeepAlive key="111">
+              <Content />
+            </KeepAlive>
+          </Provider>
+        }
       </div>
     );
   }

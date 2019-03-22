@@ -73,7 +73,6 @@ export default class KeepAliveProvider extends React.PureComponent<IKeepAlivePro
   }
 
   public componentWillUnmount() {
-    this.eventEmitter.clear();
     this.existed = false;
     document.body.removeChild(this.storeElement);
   }
