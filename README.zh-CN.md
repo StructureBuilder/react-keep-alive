@@ -252,7 +252,7 @@ ReactDOM.render(
 ### `bindLifecycle`
 这个高阶组件包装的组件将具有 **正确的** 的生命周期，进入组件必定会触发 `componentDidMount` 生命周期，离开也必定会触发 `componentWillUnmount` 生命周期。参考这个 [例子](https://codesandbox.io/s/q1xprn1qq) 能够更好的理解，注意打开控制台。
 
-旧版本新增的 `componentDidActivate` 和 `componentWillUnactivate` 生命周期已经删除，这是考虑到了新增生命周期难免会不习惯，并且原来是参照 Vue 来写的组件，但其实并不完全适合 React。
+旧版本新增的 ~~`componentDidActivate`~~ 和 ~~`componentWillUnactivate`~~ 生命周期已经删除，这是考虑到了新增生命周期难免会不习惯，并且原来是参照 Vue 来写的组件，但其实并不完全适合 React。
 
 #### 例子
 ```JavaScript
