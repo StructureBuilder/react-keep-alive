@@ -21,12 +21,14 @@
 
 
 ## ✨ Features
-- **Alone**. Not based on React Router, so you can use it wherever you need to cache it.
-- **Easy**. You can easily use <KeepAlive> to wrap your components to keep them alive.
-- **Strong**. You can use animation and you will also get a new lifecycle.
+- Not based on React Router, so you can use it wherever you need to cache it.
+- You can easily use <KeepAlive> to wrap your components to keep them alive.
+- Because it is not controlled by `display: none | block`, you can use animation.
+- You will be able to use the latest React Hooks.
+- Ability to manually control whether your components need to stay active.
 
 ## 📦 Installation
-React Keep Alive requires React 16.3 or later.
+React Keep Alive requires React 16.3 or later, but if you use React Hooks, you must be React 16.8 or higher.
 
 To use React Keep Alive with your React app:
 
@@ -144,10 +146,6 @@ Children of `<KeepAlive>` will be cached, but we have to make sure that `<KeepAl
 
 `disabled`: When we don't need components for caching, we can disable it; the disabled configuration will only takes effect when the component's status changes from unactive to active.
 
-`onActivate`: Activation event.
-
-`onUnactivate`: Unactivation event.
-
 #### Example
 ```JavaScript
 import React from 'react';
@@ -249,14 +247,9 @@ ReactDOM.render(
 **Note**: If you want to use the **lifecycle**, wrap the components in a `bindLifecycle` high-level component.
 
 ### `bindLifecycle`
-Components that pass this high-level component wrap will have the **correct** lifecycle, and we have added two additional lifecycles, `componentDidActivate` and `componentWillUnactivate`.
+Components that pass this high-level component wrap will have the **correct** lifecycle, entering the component must trigger the `componentDidMount` lifecycle, and leaving will also trigger the `componentWillUnmount` lifecycle. Refer to this [example] (https://codesandbox.io/s/q1xprn1qq) for a better understanding, pay attention to open the console.
 
-Lifecycle after adding:
-![Lifecycle after adding](https://github.com/Sam618/react-keep-alive/raw/master/assets/lifecycle.png)
-
-`componentDidActivate` will be executed once after the initial mount or from the unactivated state to the active state. although we see `componentDidActivate` after `componentDidUpdate` in the `Updating` phase, this does not mean `componentDidActivate` Always triggered.
-
-At the same time, only one of the lifecycles of `componentWillUnactivate` and `componentWillUnmount` is triggered. `componentWillUnactivate` is executed when caching is required; `componentWillUnmount` is executed without caching.
+The old version of ~~`componentDidActivate`~~ and ~~`componentWillUnactivate`~~ has been deleted, this is a component that is inevitably unaccustomed to the new life cycle, and was originally written with reference to Vue, but it is not entirely suitable for React.
 
 #### Example
 ```JavaScript
@@ -274,6 +267,33 @@ class Test extends React.Component {
   }
 }
 ```
+
+
+### `useKeepAliveEffect`
+`useKeepAliveEffect` will fire when the component enters and leaves; because the component will not be unmounted while it is still active, so if you use `useEffect`, that will not achieve the real purpose.
+
+**Note**: `useKeepAliveEffect` uses the latest React Hooks, so you must make sure React is the latest version.
+
+#### Example
+```JavaScript
+import React from 'react';
+import {useKeepAliveEffect} from 'react-keep-alive';
+
+function Test() {
+  useKeepAliveEffect(() => {
+    console.log("mounted");
+    return () => {
+      console.log("unmounted");
+    };
+  });
+  return (
+    <div>
+      This is Test.
+    </div>
+  );
+}
+```
+
 
 ## 🐛 Issues
 If you find a bug, please file an issue on [our issue tracker on GitHub](https://github.com/Sam618/react-keep-alive/issues).
