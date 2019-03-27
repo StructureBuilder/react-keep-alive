@@ -11,3 +11,4 @@
 - [Lifecycle and events](https://codesandbox.io/s/q1xprn1qq)
 - [Control cache](https://codesandbox.io/s/llp50vxnq7)
 - [Using animation](https://codesandbox.io/s/zljyprv8op)
+- [useKeepAliveEffect](https://codesandbox.io/s/yp6qjk1vw1)
