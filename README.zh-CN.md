@@ -22,13 +22,15 @@
 
 
 ## ✨ 特征
-- **独立**。 不基于 React Router，因此您可以在任何需要缓存的地方使用它。
-- **简单**。 你可以轻松地使用 `<KeepAlive>` 包装你组件来使它们保持活力。
-- **强大**。 你可以使用动画，并且你还将得到新的生命周期。
+- 不基于 React Router，因此您可以在任何需要缓存的地方使用它。
+- 你可以轻松地使用 `<KeepAlive>` 包装你组件来使它们保持活力。
+- 因为并不是使用 `display: none | block` 来控制的，所以可以使用动画。
+- 你将能够使用最新的 React Hooks。
+- 能够手动控制你的组件是否需要保持活力。
 
 
 ## 📦 安装
-React Keep Alive 最低支持 React 16.3 版本。
+React Keep Alive 最低支持 React 16.3 版本，但是如果你使用了 React Hooks，那么必须是 React 16.8 或更高版本。
 
 在你的应用中安装 React Keep Alive：
 
@@ -131,7 +133,7 @@ ReactDOM.render(
 );
 ```
 
-**注意**：你必须将 `<Provider>` 放在 `<Router>` 中，并且 React Router 必须确保是 **最新版本**。因为 React Keep Alive 使用了 **new Context**，所以必须确保 `<Router>` 使用相同的 API。请使用以下命令安装 React Router 的最新版本：
+**注意**：React Router 必须确保是 **最新版本**。因为 React Keep Alive 使用了 **new Context**，所以必须确保 `<Router>` 使用相同的 API。请使用以下命令安装 React Router 的最新版本：
 
 ```bash
 npm install react-router@next react-router-dom@next
@@ -146,9 +148,6 @@ npm install react-router@next react-router-dom@next
 
 `disabled`：当我们不需要缓存组件时，我们可以禁用它；禁用仅在组件从未激活状态变为激活状态时生效。
 
-`onActivate`：激活事件。
-
-`onUnactivate`：未激活事件。
 
 #### 例子
 ```JavaScript
@@ -251,14 +250,9 @@ ReactDOM.render(
 **注意**：如果要使用 **生命周期**，请将组件包装在 `bindLifecycle` 高阶组件中。
 
 ### `bindLifecycle`
-这个高阶组件包装的组件将具有 **正确的** 的生命周期，并且我们添加了两个额外的生命周期 `componentDidActivate` 和 `componentWillUnactivate`。
+这个高阶组件包装的组件将具有 **正确的** 的生命周期，进入组件必定会触发 `componentDidMount` 生命周期，离开也必定会触发 `componentWillUnmount` 生命周期。参考这个 [例子](https://codesandbox.io/s/q1xprn1qq) 能够更好的理解，注意打开控制台。
 
-添加新的生命周期之后:
-![Lifecycle after adding](https://github.com/Sam618/react-keep-alive/raw/master/assets/lifecycle.png)
-
-`componentDidActivate` 将在组件刚挂载或从未激活状态变为激活状态时执行。虽然我们在 `Updating` 阶段的 `componentDidUpdate` 之后能够看到 `componentDidActivate`，但这并不意味着 `componentDidActivate` 总是被触发。
-
-同时只能触发 `componentWillUnactivate` 和 `componentWillUnmount` 生命周期的其中之一。当需要缓存时执行 `componentWillUnactivate`，而 `componentWillUnmount` 在禁用缓存的情况下执行。
+旧版本新增的 `componentDidActivate` 和 `componentWillUnactivate` 生命周期已经删除，这是考虑到了新增生命周期难免会不习惯，并且原来是参照 Vue 来写的组件，但其实并不完全适合 React。
 
 #### 例子
 ```JavaScript
@@ -276,6 +270,33 @@ class Test extends React.Component {
   }
 }
 ```
+
+
+### `useKeepAliveEffect`
+`useKeepAliveEffect` 会在组件进入和离开时触发；因为在保持活力时组件不会被卸载，所以如果使用的是 `useEffect`，那将不会达到真正的目的。
+
+**注意**：`useKeepAliveEffect` 使用了最新的 React Hooks，所以必须确保 React 是最新版本。
+
+#### 例子
+```JavaScript
+import React from 'react';
+import {useKeepAliveEffect} from 'react-keep-alive';
+
+function Test() {
+  useKeepAliveEffect(() => {
+    console.log("mounted");
+    return () => {
+      console.log("unmounted");
+    };
+  });
+  return (
+    <div>
+      This is Test.
+    </div>
+  );
+}
+```
+
 
 ## 🐛 Issues
 如果你发现了错误，请在 [我们 GitHub 的 Issues](https://github.com/Sam618/react-keep-alive/issues) 上提出问题。
