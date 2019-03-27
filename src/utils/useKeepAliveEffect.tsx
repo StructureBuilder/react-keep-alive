@@ -5,7 +5,7 @@ import IdentificationContext, {IIdentificationContextProps} from '../contexts/Id
 
 export default function useKeepAliveEffect(effect: React.EffectCallback) {
   if (!useEffect) {
-    warn('[React Keep Alive] useKeepAlive API requires react 16.8 or later.');
+    warn('[React Keep Alive] useKeepAliveEffect API requires react 16.8 or later.');
   }
   const {
     eventEmitter,
