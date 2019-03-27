@@ -119,6 +119,7 @@ export default class KeepAliveProvider extends React.PureComponent<IKeepAlivePro
       providerIdentification,
       isExisted,
       setCache,
+      existed,
       unactivate,
       storeElement,
       eventEmitter,
@@ -132,6 +133,8 @@ export default class KeepAliveProvider extends React.PureComponent<IKeepAlivePro
       <KeepAliveContext.Provider
         value={{
           cache,
+          keys,
+          existed,
           providerIdentification,
           isExisted,
           setCache,

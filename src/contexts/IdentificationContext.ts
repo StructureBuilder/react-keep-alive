@@ -1,5 +1,13 @@
 import React from 'react';
 
-const WithKeepAliveContext = React.createContext({});
+export interface IIdentificationContextProps {
+  identification: string;
+  eventEmitter: any;
+  keepAlive: boolean;
+  getLifecycle: () => number;
+  isExisted: () => boolean;
+}
+
+const WithKeepAliveContext = React.createContext<IIdentificationContextProps>({} as any);
 
 export default WithKeepAliveContext;

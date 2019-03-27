@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 import {
   Switch,
@@ -11,77 +11,53 @@ import A from './views/A';
 import B from './views/B';
 import C from './views/C';
 
-class App extends React.Component {
-  state = {
-    toggle: true,
-  };
+function App() {
+  const [toggle, setToggle] = useState(true);
+  return (
+    <div>
+      <ul>
+        <li>
+          <Link to="/a">a</Link>
+        </li>
+        <li onClick={() => setToggle(true)}>
+          <Link to="/b">b</Link>
+        </li>
+        <li onClick={() => setToggle(false)}>
+          <Link to="/c">c</Link>
+        </li>
+      </ul>
 
-  handleClick = () => {
-    this.setState(({toggle}) => ({
-      toggle: !toggle,
-    }));
-  }
-
-  handleClickB = () => {
-    this.setState({
-      toggle: true,
-    });
-  }
-
-  handleClickC = () => {
-    this.setState({
-      toggle: false,
-    });
-  }
-
-  render() {
-    const {toggle} = this.state;
-    return (
       <div>
-        <ul>
-          <li>
-            <Link to="/a">a</Link>
-          </li>
-          <li onClick={this.handleClickB}>
-            <Link to="/b">b</Link>
-          </li>
-          <li onClick={this.handleClickC}>
-            <Link to="/c">c</Link>
-          </li>
-        </ul>
-
-        <div>
-          <button onClick={this.handleClick}>toggle({toggle.toString()})</button>
-        </div>
-
-        <Switch>
-          <Route
-            path="/a"
-            render={() => (
-              <KeepAlive key="A" disabled={!toggle}>
-                <A />
-              </KeepAlive>
-            )}
-          />
-          <Route
-            path="/b"
-            render={() => (
-              <KeepAlive key="B"><B /></KeepAlive>
-
-            )}
-          />
-          <Route
-            path="/c"
-            render={() => (
-              <KeepAlive key="C">
-                <C />
-              </KeepAlive>
-            )}
-          />
-        </Switch>
+        <button onClick={() => setToggle(!toggle)}>toggle({toggle.toString()})</button>
       </div>
-    );
-  }
+
+      <Switch>
+        <Route
+          path="/a"
+          render={() => (
+            <KeepAlive key="A" disabled={!toggle}>
+              <A />
+            </KeepAlive>
+          )}
+        />
+        <Route
+          path="/b"
+          render={() => (
+            <KeepAlive key="B"><B /></KeepAlive>
+
+          )}
+        />
+        <Route
+          path="/c"
+          render={() => (
+            <KeepAlive key="C">
+              <C />
+            </KeepAlive>
+          )}
+        />
+      </Switch>
+    </div>
+  );
 }
 
 ReactDOM.render(

@@ -1,9 +1,6 @@
 import React from 'react';
-import {IKeepAliveProviderImpl, IKeepAliveProviderProps} from '../components/Provider';
-import KeepAliveContext from '../contexts/KeepAliveContext';
+import KeepAliveContext, {IKeepAliveContextProps} from '../contexts/KeepAliveContext';
 import getDisplayName from './getDisplayName';
-
-type IKeepAliveContextProps = IKeepAliveProviderImpl & IKeepAliveProviderProps;
 
 export interface IKeepAliveContextConsumerComponentProps {
   _keepAliveContextProps: IKeepAliveContextProps;
