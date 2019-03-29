@@ -51,7 +51,7 @@ import Test from './views/Test';
 
 ReactDOM.render(
   <Provider>
-    <KeepAlive key="Test">
+    <KeepAlive name="Test">
       <Test />
     </KeepAlive>
   </Provider>,
@@ -175,7 +175,7 @@ class App extends React.Component {
       <div>
         <Switch>
           <Route path="/one">
-            <KeepAlive key="One">
+            <KeepAlive name="One">
               <One />
             </KeepAlive>
           </Route>
@@ -224,7 +224,7 @@ class App extends React.Component {
       <div>
         <Switch>
           <Route path="/one">
-            <KeepAlive key="One">
+            <KeepAlive name="One">
               <One />
             </KeepAlive>
           </Route>
