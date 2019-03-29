@@ -1,7 +1,6 @@
 import React from 'react';
 import Comment from './Comment';
 import {LIFECYCLE, ICache, ICacheItem} from './Provider';
-import findDOMNodeByFiberNode from '../utils/findDOMNodeByFiberNode';
 
 interface IConsumerProps {
   children: React.ReactNode;
@@ -15,6 +14,8 @@ interface IConsumerProps {
 class Consumer extends React.PureComponent<IConsumerProps> {
   private renderElement: HTMLElement;
 
+  private commentRef: any;
+
   private identification: string = this.props.identification;
 
   public componentDidMount() {
@@ -23,8 +24,7 @@ class Consumer extends React.PureComponent<IConsumerProps> {
       children,
       keepAlive,
     } = this.props;
-    const {_reactInternalFiber} = this as any;
-    this.renderElement = findDOMNodeByFiberNode(_reactInternalFiber) as HTMLElement;
+    this.renderElement = this.commentRef.parentNode;
     setCache(this.identification, {
       children,
       keepAlive,
@@ -54,7 +54,7 @@ class Consumer extends React.PureComponent<IConsumerProps> {
 
   public render() {
     const {identification} = this;
-    return <Comment>{identification}</Comment>;
+    return <Comment ref={ref => this.commentRef = ref}>{identification}</Comment>;
   }
 }
 

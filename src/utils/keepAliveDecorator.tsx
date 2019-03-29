@@ -19,6 +19,7 @@ export enum COMMAND {
 
 interface IListenUpperKeepAliveContainerProps extends IIdentificationContextConsumerComponentProps, IKeepAliveContextConsumerComponentProps {
   disabled?: boolean;
+  name?: string;
 }
 
 interface IListenUpperKeepAliveContainerState {
@@ -255,6 +256,7 @@ export default function keepAliveDecorator<P = any>(Component: React.ComponentTy
           getLifecycle,
         },
         disabled,
+        name,
         ...wrapperProps
       } = this.props;
       const {activated} = this.state;
@@ -266,9 +268,9 @@ export default function keepAliveDecorator<P = any>(Component: React.ComponentTy
       } = wrapperProps;
       // When the parent KeepAlive component is mounted or unmounted,
       // use the keepAlive prop of the parent KeepAlive component.
-      const propKey = getKeyByFiberNode((this as any)._reactInternalFiber);
+      const propKey = name || getKeyByFiberNode((this as any)._reactInternalFiber);
       if (!propKey) {
-        warn('[React Keep Alive] <KeepAlive> components must have key.');
+        warn('[React Keep Alive] <KeepAlive> components must have key or name.');
         return null;
       }
       const newKeepAlive = getKeepAlive(propKey, include, exclude, disabled);

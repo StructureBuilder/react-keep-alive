@@ -4,7 +4,8 @@ import keepAlive, {COMMAND} from '../utils/keepAliveDecorator';
 import changePositionByComment from '../utils/changePositionByComment';
 
 interface IKeepAliveProps {
-  key: string;
+  key?: string;
+  name?: string;
   disabled?: boolean;
   _container: any;
 }

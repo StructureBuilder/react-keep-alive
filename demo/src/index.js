@@ -35,7 +35,7 @@ function App() {
         <Route
           path="/a"
           render={() => (
-            <KeepAlive key="A" disabled={!toggle}>
+            <KeepAlive name="Test" disabled={!toggle}>
               <A />
             </KeepAlive>
           )}
