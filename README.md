@@ -142,7 +142,7 @@ npm install react-router@next react-router-dom@next
 Children of `<KeepAlive>` will be cached, but we have to make sure that `<KeepAlive>` is inside `<Provider>`.
 
 #### Props
-`key`: Key must exist and need to ensure that all `<KeepAlive>` keys under the current `<Provider>` are unique.
+`name`: Name must exist and need to ensure that all `<KeepAlive>` keys under the current `<Provider>` are unique(1.2.0 added, Replace key).
 
 `disabled`: When we don't need components for caching, we can disable it; the disabled configuration will only takes effect when the component's status changes from unactive to active.
 
