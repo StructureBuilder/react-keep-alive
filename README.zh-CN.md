@@ -144,7 +144,7 @@ npm install react-router@next react-router-dom@next
 我们必须确保 `<KeepAlive>` 在 `<Provider>` 里面，这样 `<KeepAlive>` 的子组件才能被缓存。
 
 #### Props
-`key`：`key` 必须存在并且需要确保当前 `<Provider>` 下的所有 `<KeepAlive>` 的 `key` 都是唯一的。
+`name`：`name` 必须存在并且需要确保当前 `<Provider>` 下的所有 `<KeepAlive>` 的 `name` 都是唯一的（1.2.0 新增，替换 `key`）。
 
 `disabled`：当我们不需要缓存组件时，我们可以禁用它；禁用仅在组件从未激活状态变为激活状态时生效。
 
