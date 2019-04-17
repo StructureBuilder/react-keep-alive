@@ -1,13 +1,14 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useKeepAliveEffect} from '../../../es';
 
 function Test() {
   const [index, setIndex] = useState(0);
   useKeepAliveEffect(() => {
-    console.log('activated');
+    console.log('activated', index);
+    const i = 0;
 
     return () => {
-      console.log('unactivated');
+      console.log('unactivated', index, i);
     };
   });
   return (

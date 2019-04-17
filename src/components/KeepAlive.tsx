@@ -7,10 +7,13 @@ interface IKeepAliveProps {
   key?: string;
   name?: string;
   disabled?: boolean;
+}
+
+interface IKeepAliveInnerProps extends IKeepAliveProps {
   _container: any;
 }
 
-class KeepAlive extends React.PureComponent<IKeepAliveProps> {
+class KeepAlive extends React.PureComponent<IKeepAliveInnerProps> {
   private bindUnmount: (() => void) | null = null;
 
   public componentDidMount() {

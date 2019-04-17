@@ -283,6 +283,7 @@ export default function keepAliveDecorator<P = any>(Component: React.ComponentTy
         ? (
           <TriggerLifecycleContainer
             {...wrapperProps}
+            key={propKey}
             propKey={propKey}
             keepAlive={combinedKeepAlive}
           />

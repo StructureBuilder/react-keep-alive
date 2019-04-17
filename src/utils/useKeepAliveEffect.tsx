@@ -1,4 +1,4 @@
-import React, {useEffect, useContext} from 'react';
+import React, {useEffect, useContext, useRef} from 'react';
 import {warn} from './debug';
 import {COMMAND} from './keepAliveDecorator';
 import IdentificationContext, {IIdentificationContextProps} from '../contexts/IdentificationContext';
@@ -11,15 +11,17 @@ export default function useKeepAliveEffect(effect: React.EffectCallback) {
     eventEmitter,
     identification,
   } = useContext<IIdentificationContextProps>(IdentificationContext);
+  const effectRef: React.MutableRefObject<React.EffectCallback> = useRef(effect);
+  effectRef.current = effect;
   useEffect(() => {
     let bindMount: (() => void) | null = null;
     let bindUnmount: (() => void) | null = null;
-    let effectResult = effect();
+    let effectResult = effectRef.current();
     let unmounted = false;
     eventEmitter.on(
       [identification, COMMAND.MOUNT],
       bindMount = () => {
-        effectResult = effect();
+        effectResult = effectRef.current();
         unmounted = false;
       },
       true,

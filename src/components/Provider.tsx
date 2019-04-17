@@ -94,8 +94,10 @@ export default class KeepAliveProvider extends React.PureComponent<IKeepAlivePro
     this.forceUpdate();
   }
 
-  public componentDidCatch() {
-    warn('[React Keep Alive] Cached components have duplicates. Please check the <KeepAlive> component of the key duplication!');
+  public componentDidCatch(_: any, info: any) {
+    if (info.componentStack.indexOf(keepAliveProviderTypeName) !== -1) {
+      warn('[React Keep Alive] Cached components have duplicates. Please check the <KeepAlive> component of the key duplication!');
+    }
   }
 
   public unactivate = (identification: string) => {
