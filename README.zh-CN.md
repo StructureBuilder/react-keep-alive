@@ -7,7 +7,7 @@
 <h1 align="center">React Keep Alive</h1>
 <div align="center">
 
-  [![npm](https://img.shields.io/npm/v/react-keep-alive.svg?style=for-the-badge)](https://www.npmjs.com/package/react-keep-alive) [![Travis (.org)](https://img.shields.io/travis/Sam618/react-keep-alive.svg?style=for-the-badge)](https://travis-ci.org/Sam618/react-keep-alive.svg?branch=master) [![license](https://img.shields.io/npm/l/react-keep-alive.svg?style=for-the-badge)](https://github.com/Sam618/react-keep-alive/blob/master/LICENSE) [![npm bundle size (minified + gzip)](https://img.shields.io/bundlephobia/minzip/react-keep-alive.svg?style=for-the-badge)](https://www.npmjs.com/package/react-keep-alive) [![downloads](https://img.shields.io/npm/dm/react-keep-alive.svg?style=for-the-badge)](https://www.npmjs.com/package/react-keep-alive) [![typescript](https://img.shields.io/badge/language-typescript-blue.svg?style=for-the-badge)](https://www.typescriptlang.org/)
+[![npm](https://img.shields.io/npm/v/react-keep-alive.svg?style=for-the-badge)](https://www.npmjs.com/package/react-keep-alive) [![Travis (.org)](https://img.shields.io/travis/Sam618/react-keep-alive.svg?style=for-the-badge)](https://travis-ci.org/Sam618/react-keep-alive.svg?branch=master) [![LICENSE](https://img.shields.io/npm/l/react-keep-alive.svg?style=for-the-badge)](https://github.com/Sam618/react-keep-alive/blob/master/LICENSE.MIT) [![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg?style=for-the-badge)](https://github.com/Sam618/react-keep-alive/blob/master/LICENSE.996ICU) [![npm bundle size (minified + gzip)](https://img.shields.io/bundlephobia/minzip/react-keep-alive.svg?style=for-the-badge)](https://www.npmjs.com/package/react-keep-alive) [![downloads](https://img.shields.io/npm/dm/react-keep-alive.svg?style=for-the-badge)](https://www.npmjs.com/package/react-keep-alive) [![typescript](https://img.shields.io/badge/language-typescript-blue.svg?style=for-the-badge)](https://www.typescriptlang.org/) [![996.icu](https://img.shields.io/badge/link-996.icu-red.svg?style=for-the-badge)](https://996.icu)
 
 
   <p><a href="https://nodei.co/npm/react-keep-alive/"><img src="https://nodei.co/npm/react-keep-alive.png?downloads=true&downloadRank=true&stars=true"></a></p>
@@ -53,7 +53,7 @@ import Test from './views/Test';
 
 ReactDOM.render(
   <Provider>
-    <KeepAlive key="Test">
+    <KeepAlive name="Test">
       <Test />
     </KeepAlive>
   </Provider>,
@@ -144,7 +144,7 @@ npm install react-router@next react-router-dom@next
 我们必须确保 `<KeepAlive>` 在 `<Provider>` 里面，这样 `<KeepAlive>` 的子组件才能被缓存。
 
 #### Props
-`key`：`key` 必须存在并且需要确保当前 `<Provider>` 下的所有 `<KeepAlive>` 的 `key` 都是唯一的。
+`name`：`name` 必须存在并且需要确保当前 `<Provider>` 下的所有 `<KeepAlive>` 的 `name` 都是唯一的（1.2.0 新增，替换 `key`）。
 
 `disabled`：当我们不需要缓存组件时，我们可以禁用它；禁用仅在组件从未激活状态变为激活状态时生效。
 
@@ -178,7 +178,7 @@ class App extends React.Component {
       <div>
         <Switch>
           <Route path="/one">
-            <KeepAlive key="One">
+            <KeepAlive name="One">
               <One />
             </KeepAlive>
           </Route>
@@ -227,7 +227,7 @@ class App extends React.Component {
       <div>
         <Switch>
           <Route path="/one">
-            <KeepAlive key="One">
+            <KeepAlive name="One">
               <One />
             </KeepAlive>
           </Route>
