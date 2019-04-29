@@ -8,6 +8,7 @@
   </div>
 
 - [With React Router](https://codesandbox.io/s/yjn7k230z)
+- [With React Loadable](https://codesandbox.io/s/3r5331vjl1)
 - [Lifecycle and events](https://codesandbox.io/s/q1xprn1qq)
 - [Control cache](https://codesandbox.io/s/llp50vxnq7)
 - [Using animation](https://codesandbox.io/s/zljyprv8op)
