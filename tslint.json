@@ -6,6 +6,7 @@
   "rules": {
     "max-line-length": false,
     "no-console": false,
+    "no-debugger": false,
     "quotemark": [true, "single", "jsx-double"],
     "trailing-comma": [true, {"multiline": "ignore", "singleline": "never"}],
     "ordered-imports": false,

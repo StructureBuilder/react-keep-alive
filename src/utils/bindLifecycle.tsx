@@ -12,7 +12,10 @@ export default function bindLifecycle<P = any>(Component: React.ComponentClass<P
   const {
     componentDidMount = noop,
     componentDidUpdate = noop,
+    componentDidActivate = noop,
+    componentWillUnactivate = noop,
     componentWillUnmount = noop,
+    shouldComponentUpdate = noop,
   } = WrappedComponent.prototype;
 
   WrappedComponent.prototype.componentDidMount = function () {
@@ -22,12 +25,25 @@ export default function bindLifecycle<P = any>(Component: React.ComponentClass<P
       _container: {
         identification,
         eventEmitter,
+        activated,
       },
+      keepAlive,
     } = this.props;
-    this._unmounted = false;
+    // Determine whether to execute the componentDidActivate life cycle of the current component based on the activation state of the KeepAlive components
+    if (!activated && keepAlive !== false) {
+      componentDidActivate.call(this);
+    }
     eventEmitter.on(
-      [identification, COMMAND.MOUNT],
-      this._bindMount = () => this._needActivate = true,
+      [identification, COMMAND.ACTIVATE],
+      this._bindActivate = () => this._needActivate = true,
+      true,
+    );
+    eventEmitter.on(
+      [identification, COMMAND.UNACTIVATE],
+      this._bindUnactivate = () => {
+        componentWillUnactivate.call(this);
+        this._unmounted = false;
+      },
       true,
     );
     eventEmitter.on(
@@ -39,13 +55,20 @@ export default function bindLifecycle<P = any>(Component: React.ComponentClass<P
       true,
     );
   };
-  WrappedComponent.prototype.componentDidUpdate = function (...args: any) {
+
+  // In order to be able to re-update after transferring the DOM, we need to block the first update.
+  WrappedComponent.prototype.shouldComponentUpdate = function (...args: any) {
+    if (this._needActivate) {
+      return false;
+    }
+    return shouldComponentUpdate.call(this, ...args) || true;
+  };
+
+  WrappedComponent.prototype.componentDidUpdate = function () {
+    componentDidUpdate.call(this);
     if (this._needActivate) {
       this._needActivate = false;
-      this._unmounted = false;
-      componentDidMount.call(this);
-    } else {
-      componentDidUpdate.apply(this, args);
+      componentDidActivate.call(this);
     }
   };
   WrappedComponent.prototype.componentWillUnmount = function () {
@@ -59,8 +82,12 @@ export default function bindLifecycle<P = any>(Component: React.ComponentClass<P
       },
     } = this.props;
     eventEmitter.off(
-      [identification, COMMAND.MOUNT],
-      this._bindMount,
+      [identification, COMMAND.ACTIVATE],
+      this._bindActivate,
+    );
+    eventEmitter.off(
+      [identification, COMMAND.UNACTIVATE],
+      this._bindUnactivate,
     );
     eventEmitter.off(
       [identification, COMMAND.UNMOUNT],
@@ -74,6 +101,8 @@ export default function bindLifecycle<P = any>(Component: React.ComponentClass<P
       _identificationContextProps: {
         identification,
         eventEmitter,
+        activated,
+        keepAlive,
       },
       ...wrapperProps
     }) => {
@@ -88,6 +117,8 @@ export default function bindLifecycle<P = any>(Component: React.ComponentClass<P
           _container={{
             identification,
             eventEmitter,
+            activated,
+            keepAlive,
           }}
         />
       );

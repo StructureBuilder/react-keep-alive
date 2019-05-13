@@ -3,11 +3,20 @@ import {bindLifecycle} from '../../../es';
 
 @bindLifecycle
 class C extends React.Component {
+  state = {
+    value: false,
+  };
+
   componentWillMount() {
     console.log('C componentWillMount');
   }
 
   componentDidMount() {
+    setTimeout(() => {
+      this.setState({
+        value: true,
+      });
+    }, 1000);
     console.log('C componentDidMount');
   }
 
@@ -34,7 +43,9 @@ class C extends React.Component {
   render() {
     console.log('C render');
     return (
-      <div>This is c.</div>
+      <div>
+        {this.state.value ? <div>This is c.</div> : null}
+      </div>
     );
   }
 }

@@ -11,7 +11,7 @@
 
 
   <p><a href="https://nodei.co/npm/react-keep-alive/"><img src="https://nodei.co/npm/react-keep-alive.png?downloads=true&downloadRank=true&stars=true"></a></p>
-  
+
   <p>一个保持组件状态并避免重复重渲染的组件。</p>
 
   <div style="width: 100px; text-align: left;">
@@ -250,9 +250,14 @@ ReactDOM.render(
 **注意**：如果要使用 **生命周期**，请将组件包装在 `bindLifecycle` 高阶组件中。
 
 ### `bindLifecycle`
-这个高阶组件包装的组件将具有 **正确的** 的生命周期，进入组件必定会触发 `componentDidMount` 生命周期，离开也必定会触发 `componentWillUnmount` 生命周期。参考这个 [例子](https://codesandbox.io/s/q1xprn1qq) 能够更好的理解，注意打开控制台。
+这个高阶组件包装的组件将具有 **正确的** 的生命周期，并且我们添加了两个额外的生命周期 `componentDidActivate` 和 `componentWillUnactivate`。
 
-旧版本新增的 ~~`componentDidActivate`~~ 和 ~~`componentWillUnactivate`~~ 生命周期已经删除，这是考虑到了新增生命周期难免会不习惯，并且原来是参照 Vue 来写的组件，但其实并不完全适合 React。
+添加新的生命周期之后:
+![Lifecycle after adding](https://github.com/Sam618/react-keep-alive/raw/master/assets/lifecycle.png)
+
+`componentDidActivate` 将在组件刚挂载或从未激活状态变为激活状态时执行。虽然我们在 `Updating` 阶段的 `componentDidUpdate` 之后能够看到 `componentDidActivate`，但这并不意味着 `componentDidActivate` 总是被触发。
+
+同时只能触发 `componentWillUnactivate` 和 `componentWillUnmount` 生命周期的其中之一。当需要缓存时执行 `componentWillUnactivate`，而 `componentWillUnmount` 在禁用缓存的情况下执行。
 
 #### 例子
 ```JavaScript

@@ -6,11 +6,11 @@
 
 <h1 align="center">React Keep Alive</h1>
 <div align="center">
-  
+
 [![npm](https://img.shields.io/npm/v/react-keep-alive.svg?style=for-the-badge)](https://www.npmjs.com/package/react-keep-alive) [![Travis (.org)](https://img.shields.io/travis/Sam618/react-keep-alive.svg?style=for-the-badge)](https://travis-ci.org/Sam618/react-keep-alive.svg?branch=master) [![LICENSE](https://img.shields.io/npm/l/react-keep-alive.svg?style=for-the-badge)](https://github.com/Sam618/react-keep-alive/blob/master/LICENSE.MIT) [![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg?style=for-the-badge)](https://github.com/Sam618/react-keep-alive/blob/master/LICENSE.996ICU) [![npm bundle size (minified + gzip)](https://img.shields.io/bundlephobia/minzip/react-keep-alive.svg?style=for-the-badge)](https://www.npmjs.com/package/react-keep-alive) [![downloads](https://img.shields.io/npm/dm/react-keep-alive.svg?style=for-the-badge)](https://www.npmjs.com/package/react-keep-alive) [![typescript](https://img.shields.io/badge/language-typescript-blue.svg?style=for-the-badge)](https://www.typescriptlang.org/) [![996.icu](https://img.shields.io/badge/link-996.icu-red.svg?style=for-the-badge)](https://996.icu)
 
   <p><a href="https://nodei.co/npm/react-keep-alive/"><img src="https://nodei.co/npm/react-keep-alive.png?downloads=true&downloadRank=true&stars=true"></a></p>
-  
+
   <p>A component that maintains component state and avoids repeated re-rendering.</p>
 
   <div style="width: 100px; text-align: left;">
@@ -247,9 +247,14 @@ ReactDOM.render(
 **Note**: If you want to use the **lifecycle**, wrap the components in a `bindLifecycle` high-level component.
 
 ### `bindLifecycle`
-Components that pass this high-level component wrap will have the **correct** lifecycle, entering the component must trigger the `componentDidMount` lifecycle, and leaving will also trigger the `componentWillUnmount` lifecycle. Refer to this [example] (https://codesandbox.io/s/q1xprn1qq) for a better understanding, pay attention to open the console.
+Components that pass this high-level component wrap will have the **correct** lifecycle, and we have added two additional lifecycles, `componentDidActivate` and `componentWillUnactivate`.
 
-The old version of ~~`componentDidActivate`~~ and ~~`componentWillUnactivate`~~ has been deleted, this is a component that is inevitably unaccustomed to the new life cycle, and was originally written with reference to Vue, but it is not entirely suitable for React.
+Lifecycle after adding:
+![Lifecycle after adding](https://github.com/Sam618/react-keep-alive/raw/master/assets/lifecycle.png)
+
+`componentDidActivate` will be executed once after the initial mount or from the unactivated state to the active state. although we see `componentDidActivate` after `componentDidUpdate` in the `Updating` phase, this does not mean `componentDidActivate` Always triggered.
+
+At the same time, only one of the lifecycles of `componentWillUnactivate` and `componentWillUnmount` is triggered. `componentWillUnactivate` is executed when caching is required; `componentWillUnmount` is executed without caching.
 
 #### Example
 ```JavaScript

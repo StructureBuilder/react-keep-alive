@@ -12,9 +12,11 @@ import shallowEqual from './shallowEqual';
 import getKeepAlive from './getKeepAlive';
 
 export enum COMMAND {
+  UNACTIVATE = 'unactivate',
   UNMOUNT = 'unmount',
-  MOUNT = 'mount',
+  ACTIVATE = 'activate',
   CURRENT_UNMOUNT = 'current_unmount',
+  CURRENT_UNACTIVATE = 'current_unactivate',
 }
 
 interface IListenUpperKeepAliveContainerProps extends IIdentificationContextConsumerComponentProps, IKeepAliveContextConsumerComponentProps {
@@ -29,6 +31,7 @@ interface IListenUpperKeepAliveContainerState {
 interface ITriggerLifecycleContainerProps extends IKeepAliveContextConsumerComponentProps {
   propKey: string;
   keepAlive: boolean;
+  getCombinedKeepAlive: () => boolean;
 }
 
 /**
@@ -42,6 +45,8 @@ interface ITriggerLifecycleContainerProps extends IKeepAliveContextConsumerCompo
 export default function keepAliveDecorator<P = any>(Component: React.ComponentType<any>): React.ComponentType<P> {
   class TriggerLifecycleContainer extends React.PureComponent<ITriggerLifecycleContainerProps> {
     private identification: string;
+
+    private activated = false;
 
     private ifStillActivate = false;
 
@@ -63,6 +68,9 @@ export default function keepAliveDecorator<P = any>(Component: React.ComponentTy
     }
 
     public componentDidMount() {
+      if (!this.ifStillActivate) {
+        this.activate();
+      }
       const {
         keepAlive,
         _keepAliveContextProps: {
@@ -71,18 +79,39 @@ export default function keepAliveDecorator<P = any>(Component: React.ComponentTy
       } = this.props;
       if (keepAlive) {
         this.needActivate = true;
-        eventEmitter.emit([this.identification, COMMAND.MOUNT]);
+        eventEmitter.emit([this.identification, COMMAND.ACTIVATE]);
+      }
+    }
+
+    public componentDidCatch() {
+      if (!this.activated) {
+        this.activate();
       }
     }
 
     public componentWillUnmount() {
       const {
+        getCombinedKeepAlive,
         _keepAliveContextProps: {
           eventEmitter,
+          isExisted,
         },
       } = this.props;
-      eventEmitter.emit([this.identification, COMMAND.CURRENT_UNMOUNT]);
-      eventEmitter.emit([this.identification, COMMAND.UNMOUNT]);
+      const keepAlive = getCombinedKeepAlive();
+      if (!keepAlive || !isExisted()) {
+        eventEmitter.emit([this.identification, COMMAND.CURRENT_UNMOUNT]);
+        eventEmitter.emit([this.identification, COMMAND.UNMOUNT]);
+      }
+      // When the Provider components are unmounted, the cache is not needed,
+      // so you don't have to execute the componentWillUnactivate lifecycle.
+      if (keepAlive && isExisted()) {
+        eventEmitter.emit([this.identification, COMMAND.CURRENT_UNACTIVATE]);
+        eventEmitter.emit([this.identification, COMMAND.UNACTIVATE]);
+      }
+    }
+
+    private activate = () => {
+      this.activated = true;
     }
 
     private reactivate = () => {
@@ -110,6 +139,7 @@ export default function keepAliveDecorator<P = any>(Component: React.ComponentTy
       const {
         propKey,
         keepAlive,
+        getCombinedKeepAlive,
         _keepAliveContextProps: {
           isExisted,
           storeElement,
@@ -137,6 +167,7 @@ export default function keepAliveDecorator<P = any>(Component: React.ComponentTy
       const {
         isNeedActivate,
         notNeedActivate,
+        activated,
         getLifecycle,
         setLifecycle,
         identification,
@@ -156,6 +187,7 @@ export default function keepAliveDecorator<P = any>(Component: React.ComponentTy
                 identification,
                 eventEmitter,
                 keepAlive,
+                activated,
                 getLifecycle,
                 isExisted,
               }}
@@ -169,6 +201,7 @@ export default function keepAliveDecorator<P = any>(Component: React.ComponentTy
                   eventEmitter,
                   identification,
                   storeElement,
+                  keepAlive,
                   cache,
                 }}
               />
@@ -180,11 +213,15 @@ export default function keepAliveDecorator<P = any>(Component: React.ComponentTy
   }
 
   class ListenUpperKeepAliveContainer extends React.Component<IListenUpperKeepAliveContainerProps, IListenUpperKeepAliveContainerState> {
+    private combinedKeepAlive: boolean;
+
     public state = {
       activated: true,
     };
 
-    private mount: () => void;
+    private activate: () => void;
+
+    private unactivate: () => void;
 
     private unmount: () => void;
 
@@ -228,8 +265,13 @@ export default function keepAliveDecorator<P = any>(Component: React.ComponentTy
         return;
       }
       eventEmitter.on(
-        [identification, COMMAND.MOUNT],
-        this.mount = () => this.setState({activated: true}),
+        [identification, COMMAND.ACTIVATE],
+        this.activate = () => this.setState({activated: true}),
+        true,
+      );
+      eventEmitter.on(
+        [identification, COMMAND.UNACTIVATE],
+        this.unactivate = () => this.setState({activated: false}),
         true,
       );
       eventEmitter.on(
@@ -244,8 +286,13 @@ export default function keepAliveDecorator<P = any>(Component: React.ComponentTy
       if (!identification) {
         return;
       }
-      eventEmitter.off([identification, COMMAND.MOUNT], this.mount);
+      eventEmitter.off([identification, COMMAND.ACTIVATE], this.activate);
+      eventEmitter.off([identification, COMMAND.UNACTIVATE], this.unactivate);
       eventEmitter.off([identification, COMMAND.UNMOUNT], this.unmount);
+    }
+
+    private getCombinedKeepAlive = () => {
+      return this.combinedKeepAlive;
     }
 
     public render() {
@@ -274,7 +321,7 @@ export default function keepAliveDecorator<P = any>(Component: React.ComponentTy
         return null;
       }
       const newKeepAlive = getKeepAlive(propKey, include, exclude, disabled);
-      const combinedKeepAlive = getLifecycle === undefined || getLifecycle() === LIFECYCLE.UPDATING
+      this.combinedKeepAlive = getLifecycle === undefined || getLifecycle() === LIFECYCLE.UPDATING
         ? newKeepAlive
         : identification
           ? upperKeepAlive && newKeepAlive
@@ -285,7 +332,8 @@ export default function keepAliveDecorator<P = any>(Component: React.ComponentTy
             {...wrapperProps}
             key={propKey}
             propKey={propKey}
-            keepAlive={combinedKeepAlive}
+            keepAlive={this.combinedKeepAlive}
+            getCombinedKeepAlive={this.getCombinedKeepAlive}
           />
         )
         : null;

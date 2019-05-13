@@ -8,6 +8,7 @@ class B extends React.Component {
   }
 
   componentDidMount() {
+    console.log(this.ref.offsetWidth);
     console.log('B componentDidMount');
   }
 
@@ -20,6 +21,7 @@ class B extends React.Component {
   }
 
   componentDidUpdate() {
+    console.log(this.ref.offsetWidth);
     console.log('B componentDidUpdate');
   }
 
@@ -34,7 +36,7 @@ class B extends React.Component {
   render() {
     console.log('B render');
     return (
-      <div>This is b.</div>
+      <div ref={ref => this.ref = ref}>This is b.</div>
     );
   }
 }
