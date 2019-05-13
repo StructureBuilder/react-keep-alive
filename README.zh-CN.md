@@ -148,6 +148,8 @@ npm install react-router@next react-router-dom@next
 
 `disabled`：当我们不需要缓存组件时，我们可以禁用它；禁用仅在组件从未激活状态变为激活状态时生效。
 
+**注意**：`<KeepAlive>` 包裹的组件内部最外层必须有一个真实的 DOM 标签。
+
 
 #### 例子
 ```JavaScript

@@ -146,6 +146,8 @@ Children of `<KeepAlive>` will be cached, but we have to make sure that `<KeepAl
 
 `disabled`: When we don't need components for caching, we can disable it; the disabled configuration will only takes effect when the component's status changes from unactive to active.
 
+**Note**: `<KeepAlive>` The innermost outer layer of the packaged component must have a real DOM tag.
+
 #### Example
 ```JavaScript
 import React from 'react';
@@ -164,6 +166,7 @@ import {
 class One extends React.Component {
   render() {
     return (
+      // a real DOM tag
       <div>This is One.</div>
     );
   }
