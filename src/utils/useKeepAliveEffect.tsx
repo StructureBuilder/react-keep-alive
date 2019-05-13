@@ -1,4 +1,4 @@
-import React, {useEffect, useContext, useRef, useState} from 'react';
+import React, {useEffect, useContext, useRef} from 'react';
 import {warn} from './debug';
 import {COMMAND} from './keepAliveDecorator';
 import IdentificationContext, {IIdentificationContextProps} from '../contexts/IdentificationContext';

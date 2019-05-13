@@ -25,9 +25,9 @@ class KeepAlive extends React.PureComponent<IKeepAliveInnerProps> {
 
   private ref: null | Element = null;
 
-  private refNextSibling: null | ChildNode = null;
+  private refNextSibling: null | Node = null;
 
-  private childNodes: ChildNode[] = [];
+  private childNodes: Node[] = [];
 
   public componentDidMount() {
     const {
