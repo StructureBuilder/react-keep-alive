@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import Comment from './Comment';
 import KeepAliveContext from '../contexts/KeepAliveContext';
 import createEventEmitter from '../utils/createEventEmitter';
-import {warn} from '../utils/debug';
 import createUniqueIdentification from '../utils/createUniqueIdentification';
 import createStoreElement from '../utils/createStoreElement';
 
@@ -92,12 +91,6 @@ export default class KeepAliveProvider extends React.PureComponent<IKeepAlivePro
       ...value,
     };
     this.forceUpdate();
-  }
-
-  public componentDidCatch(_: any, info: any) {
-    if (info.componentStack.indexOf(keepAliveProviderTypeName) !== -1) {
-      warn('[React Keep Alive] Cached components have duplicates. Please check the <KeepAlive> component of the key duplication!');
-    }
   }
 
   public unactivate = (identification: string) => {

@@ -104,7 +104,9 @@ class KeepAlive extends React.PureComponent<IKeepAliveInnerProps> {
     if (this.ref && this.ref.parentNode && this.ref.nextSibling) {
       const childNodes = this.ref.childNodes as any;
       this.refNextSibling = this.ref.nextSibling;
-      for (const child of childNodes) {
+      this.childNodes = [];
+      while (childNodes.length) {
+        const child = childNodes[0];
         this.childNodes.push(child);
         this.ref.parentNode.insertBefore(child, this.ref.nextSibling);
       }
@@ -183,7 +185,7 @@ class KeepAlive extends React.PureComponent<IKeepAliveInnerProps> {
         <AsyncComponent
           setMounted={this.setMounted}
           getMounted={this.getMounted}
-          correctionPosition={this.correctionPosition}
+          onUpdate={this.correctionPosition}
         >
           {this.props.children}
         </AsyncComponent>

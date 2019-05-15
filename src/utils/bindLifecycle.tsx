@@ -6,6 +6,8 @@ import {COMMAND} from './keepAliveDecorator';
 import withIdentificationContextConsumer from './withIdentificationContextConsumer';
 import getDisplayName from './getDisplayName';
 
+export const bindLifecycleTypeName = '$$bindLifecycle';
+
 export default function bindLifecycle<P = any>(Component: React.ComponentClass<P>) {
   const WrappedComponent = (Component as any).WrappedComponent || (Component as any).wrappedComponent || Component;
 
@@ -59,6 +61,7 @@ export default function bindLifecycle<P = any>(Component: React.ComponentClass<P
   // In order to be able to re-update after transferring the DOM, we need to block the first update.
   WrappedComponent.prototype.shouldComponentUpdate = function (...args: any) {
     if (this._needActivate) {
+      this.forceUpdate();
       return false;
     }
     return shouldComponentUpdate.call(this, ...args) || true;
@@ -129,7 +132,7 @@ export default function bindLifecycle<P = any>(Component: React.ComponentClass<P
   ));
 
   (BindLifecycle as any).WrappedComponent = WrappedComponent;
-  BindLifecycle.displayName = `bindLifecycle(${getDisplayName(Component)})`;
+  BindLifecycle.displayName = `${bindLifecycleTypeName}(${getDisplayName(Component)})`;
   return hoistNonReactStatics(
     BindLifecycle,
     Component,

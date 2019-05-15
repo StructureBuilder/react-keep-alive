@@ -1,6 +1,6 @@
 {
   "name": "react-keep-alive",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Package will allow components to maintain their status, to avoid repeated re-rendering.",
   "author": "Shen Chang",
   "homepage": "https://github.com/Sam618/react-keep-alive",
@@ -37,8 +37,7 @@
   "dependencies": {
     "@types/js-md5": "^0.4.2",
     "hoist-non-react-statics": "^3.3.0",
-    "js-md5": "^0.7.3",
-    "react-deep-force-update": "^2.1.3"
+    "js-md5": "^0.7.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",

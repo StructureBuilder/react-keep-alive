@@ -43,7 +43,7 @@ function App() {
         <Route
           path="/b"
           render={() => (
-            <KeepAlive name="A"><B /></KeepAlive>
+            <KeepAlive name="A"><B /><B /></KeepAlive>
 
           )}
         />
