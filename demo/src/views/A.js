@@ -17,7 +17,6 @@ function Test() {
   return (
     <div>
       <div ref={divRef}>This is a.</div>
-      <B />
       <button onClick={() => setIndex(index + 1)}>click me({index})</button>
     </div>
   );

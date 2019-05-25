@@ -8,6 +8,7 @@ interface IKeepAliveProps {
   key?: string;
   name?: string;
   disabled?: boolean;
+  extra?: any;
 }
 
 interface IKeepAliveInnerProps extends IKeepAliveProps {

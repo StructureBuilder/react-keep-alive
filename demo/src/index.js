@@ -6,6 +6,8 @@ import {
   Link,
   BrowserRouter as Router,
 } from 'react-router-dom';
+import { Provider as ReduxProvider } from 'react-redux';
+import { createStore } from 'redux';
 import {Provider, KeepAlive} from '../../es';
 import A from './views/A';
 import B from './views/B';
@@ -42,9 +44,8 @@ function App() {
         />
         <Route
           path="/b"
-          render={() => (
-            <KeepAlive name="A"><B /><B /></KeepAlive>
-
+          render={props => (
+            <KeepAlive name="A" extra={props}><B /><B /></KeepAlive>
           )}
         />
         <Route
@@ -60,13 +61,26 @@ function App() {
   );
 }
 
+const store = createStore(function counter(state = 0, action) {
+  switch (action.type) {
+  case 'INCREMENT':
+    return state + 1;
+  case 'DECREMENT':
+    return state - 1;
+  default:
+    return state;
+  }
+});
+
 ReactDOM.render(
   (
-    <Provider>
+    <ReduxProvider store={store}>
       <Router>
-        <App />
+        <Provider>
+          <App />
+        </Provider>
       </Router>
-    </Provider>
+    </ReduxProvider>
   ),
   document.getElementById('root')
 );

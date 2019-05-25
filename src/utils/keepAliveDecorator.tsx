@@ -30,6 +30,7 @@ interface IListenUpperKeepAliveContainerState {
 
 interface ITriggerLifecycleContainerProps extends IKeepAliveContextConsumerComponentProps {
   propKey: string;
+  extra?: any;
   keepAlive: boolean;
   getCombinedKeepAlive: () => boolean;
 }
@@ -139,6 +140,7 @@ export default function keepAliveDecorator<P = any>(Component: React.ComponentTy
       const {
         propKey,
         keepAlive,
+        extra,
         getCombinedKeepAlive,
         _keepAliveContextProps: {
           isExisted,
@@ -190,6 +192,7 @@ export default function keepAliveDecorator<P = any>(Component: React.ComponentTy
                 activated,
                 getLifecycle,
                 isExisted,
+                extra,
               }}
             >
               <Component

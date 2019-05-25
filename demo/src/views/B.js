@@ -1,6 +1,10 @@
 import React from 'react';
+import { connect } from "react-redux";
 import {bindLifecycle} from '../../../es';
+import {withRouter} from 'react-router-dom';
 
+@withRouter
+@connect()
 @bindLifecycle
 class B extends React.Component {
   componentWillMount() {
@@ -34,6 +38,7 @@ class B extends React.Component {
   }
 
   render() {
+    console.log(this);
     console.log('B render');
     return (
       <div ref={ref => this.ref = ref}>This is b.</div>

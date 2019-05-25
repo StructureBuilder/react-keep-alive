@@ -106,6 +106,7 @@ export default function bindLifecycle<P = any>(Component: React.ComponentClass<P
         eventEmitter,
         activated,
         keepAlive,
+        extra,
       },
       ...wrapperProps
     }) => {
@@ -115,6 +116,7 @@ export default function bindLifecycle<P = any>(Component: React.ComponentClass<P
       }
       return (
         <Component
+          {...extra}
           {...wrapperProps}
           ref={forwardRef || noop}
           _container={{
