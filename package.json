@@ -1,6 +1,6 @@
 {
   "name": "react-keep-alive",
-  "version": "2.1.0",
+  "version": "2.0.2",
   "description": "Package will allow components to maintain their status, to avoid repeated re-rendering.",
   "author": "Shen Chang",
   "homepage": "https://github.com/Sam618/react-keep-alive",
@@ -28,9 +28,9 @@
     "build:es": "npm run clean:es && tsc",
     "build:cjs": "npm run clean:cjs && tsc --outDir cjs --module commonjs",
     "build:dist": "npm run build:es && npm run build:cjs",
-    "publish:patch": "npm run build:dist && npm version patch",
-    "publish:minor": "npm run build:dist && npm version minor",
-    "publish:major": "npm run build:dist && npm version major",
+    "publish:patch": "npm run build:dist && npm version patch && npm publish",
+    "publish:minor": "npm run build:dist && npm version minor && npm publish",
+    "publish:major": "npm run build:dist && npm version major && npm publish",
     "start:demo": "webpack-dev-server --hot --historyApiFallback",
     "start:es": "npm run clean:es && tsc -w -sourcemap --outDir es"
   },
