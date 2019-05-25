@@ -68,6 +68,7 @@ export default class AsyncComponent extends React.Component<IProps, IState> {
       if (this.props.getMounted()) {
         this.props.setMounted(false);
         this.forceUpdateChildren();
+        this.props.onUpdate();
       }
     });
     return false;

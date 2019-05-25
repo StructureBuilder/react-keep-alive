@@ -29,6 +29,10 @@ module.exports = {
         use: ['babel-loader'],
         include: SRC,
       },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+      },
     ],
   },
 };
