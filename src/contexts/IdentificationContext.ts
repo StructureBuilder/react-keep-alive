@@ -6,6 +6,7 @@ export interface IIdentificationContextProps {
   keepAlive: boolean;
   getLifecycle: () => number;
   isExisted: () => boolean;
+  activated: boolean;
 }
 
 const WithKeepAliveContext = React.createContext<IIdentificationContextProps>({} as any);
