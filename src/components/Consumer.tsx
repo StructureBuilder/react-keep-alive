@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import Comment from './Comment';
 import {LIFECYCLE, ICache, ICacheItem} from './Provider';
 

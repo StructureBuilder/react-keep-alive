@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import IdentificationContext, {IIdentificationContextProps} from '../contexts/IdentificationContext';
 import getDisplayName from './getDisplayName';
 

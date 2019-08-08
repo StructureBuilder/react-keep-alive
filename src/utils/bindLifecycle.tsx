@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import noop from './noop';
 import {warn} from './debug';

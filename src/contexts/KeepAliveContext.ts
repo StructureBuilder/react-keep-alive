@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import {IKeepAliveProviderImpl, IKeepAliveProviderProps} from '../components/Provider';
 
 export type IKeepAliveContextProps = IKeepAliveProviderImpl & IKeepAliveProviderProps;

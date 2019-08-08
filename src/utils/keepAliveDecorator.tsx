@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import IdentificationContext from '../contexts/IdentificationContext';
 import Consumer from '../components/Consumer';

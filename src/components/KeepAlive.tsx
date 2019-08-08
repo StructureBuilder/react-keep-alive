@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import AsyncComponent from './AsyncComponent';
 import {START_MOUNTING_DOM, LIFECYCLE} from './Provider';
 import keepAlive, {COMMAND} from '../utils/keepAliveDecorator';

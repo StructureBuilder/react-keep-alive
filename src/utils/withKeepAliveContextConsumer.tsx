@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import KeepAliveContext, {IKeepAliveContextProps} from '../contexts/KeepAliveContext';
 import getDisplayName from './getDisplayName';
 
