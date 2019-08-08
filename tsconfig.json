@@ -6,7 +6,7 @@
     "esModuleInterop": true,
     "target": "es5",
     "lib": ["es6", "dom"],
-    "declaration": true,
+    "declaration": false,
     "sourceMap": false,
     "jsx": "react",
     "moduleResolution": "node",

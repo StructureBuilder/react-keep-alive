@@ -19,6 +19,7 @@
   },
   "main": "cjs/index.js",
   "module": "es/index.js",
+  "types": "index.d.ts",
   "scripts": {
     "clean:es": "rimraf es",
     "clean:cjs": "rimraf cjs",
@@ -28,9 +29,9 @@
     "build:es": "npm run clean:es && tsc",
     "build:cjs": "npm run clean:cjs && tsc --outDir cjs --module commonjs",
     "build:dist": "npm run build:es && npm run build:cjs",
-    "publish:patch": "npm run build:dist && npm version patch && npm publish",
-    "publish:minor": "npm run build:dist && npm version minor && npm publish",
-    "publish:major": "npm run build:dist && npm version major && npm publish",
+    "publish:patch": "npm version patch && npm publish",
+    "publish:minor": "npm version minor && npm publish",
+    "publish:major": "npm version major && npm publish",
     "start:demo": "webpack-dev-server --hot --historyApiFallback",
     "start:es": "npm run clean:es && tsc -w -sourcemap --outDir es"
   },
