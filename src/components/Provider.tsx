@@ -49,7 +49,7 @@ export interface IKeepAliveProviderProps {
 export default class KeepAliveProvider extends React.PureComponent<IKeepAliveProviderProps> implements IKeepAliveProviderImpl {
   public static displayName = keepAliveProviderTypeName;
 
-  public storeElement = createStoreElement();
+  public storeElement: HTMLElement;
 
   // Sometimes data that changes with setState cannot be synchronized, so force refresh
   public cache: ICache = Object.create(null);
@@ -63,6 +63,11 @@ export default class KeepAliveProvider extends React.PureComponent<IKeepAlivePro
   private needRerender: boolean = false;
 
   public providerIdentification: string = createUniqueIdentification();
+
+  public componentDidMount() {
+    this.storeElement = createStoreElement();
+    this.forceUpdate();
+  }
 
   public componentDidUpdate() {
     if (this.needRerender) {
@@ -124,6 +129,9 @@ export default class KeepAliveProvider extends React.PureComponent<IKeepAlivePro
       include,
       exclude,
     } = this.props;
+    if (!storeElement) {
+      return null;
+    }
     return (
       <KeepAliveContext.Provider
         value={{
