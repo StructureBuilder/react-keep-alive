@@ -138,5 +138,5 @@ export default function bindLifecycle<P = any>(Component: React.ComponentClass<P
   return hoistNonReactStatics(
     BindLifecycle,
     Component,
-  );
+  ) as any;
 }
