@@ -67,8 +67,8 @@ export default function bindLifecycle<P = any>(Component: React.ComponentClass<P
     return shouldComponentUpdate.call(this, ...args) || true;
   };
 
-  WrappedComponent.prototype.componentDidUpdate = function () {
-    componentDidUpdate.call(this);
+  WrappedComponent.prototype.componentDidUpdate = function (...args: any) {
+    componentDidUpdate.call(this, ...args);
     if (this._needActivate) {
       this._needActivate = false;
       componentDidActivate.call(this);
