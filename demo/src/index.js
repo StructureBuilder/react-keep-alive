@@ -1,86 +1,124 @@
-import React, {useState} from 'react';
-import ReactDOM from 'react-dom';
-import {
-  Switch,
-  Route,
-  Link,
-  BrowserRouter as Router,
-} from 'react-router-dom';
-import { Provider as ReduxProvider } from 'react-redux';
-import { createStore } from 'redux';
-import {Provider, KeepAlive} from '../../es';
-import A from './views/A';
-import B from './views/B';
-import C from './views/C';
+import React from "react";
+import ReactDOM from "react-dom"
+import KeepAlive from './KeepAlive.backup';
 
-function App() {
-  const [toggle, setToggle] = useState(true);
-  return (
-    <div>
-      <ul>
-        <li>
-          <Link to="/a">a</Link>
-        </li>
-        <li onClick={() => setToggle(true)}>
-          <Link to="/b">b</Link>
-        </li>
-        <li onClick={() => setToggle(false)}>
-          <Link to="/c">c</Link>
-        </li>
-      </ul>
+const {Provider, Consumer} = React.createContext();
 
-      <div>
-        <button onClick={() => setToggle(!toggle)}>toggle({toggle.toString()})</button>
-      </div>
+class Test2 extends React.Component {
+  state = {
+    index: 0,
+    visible: false,
+  }
 
-      <Switch>
-        <Route
-          path="/a"
-          render={() => (
-            <KeepAlive name="Test" disabled={!toggle}>
-              <A />
-            </KeepAlive>
-          )}
-        />
-        <Route
-          path="/b"
-          render={props => (
-            <KeepAlive name="A" extra={props}><B /><B /></KeepAlive>
-          )}
-        />
-        <Route
-          path="/c"
-          render={() => (
-            <KeepAlive name="B">
-              <C />
-            </KeepAlive>
-          )}
-        />
-      </Switch>
-    </div>
-  );
+  index = 0;
+
+  componentDidMount() {
+    // console.log('componentDidMount', this);
+    // this.timer = setInterval(() => {
+    //   this.setState(({index}) => {
+    //     this.index = index + 1;
+    //     return ({
+    //       index: index + 1,
+    //     });
+    //   });
+    // }, 600);
+  };
+
+  componentWillUnmount() {
+    // console.log('componentWillUnmount');
+    clearInterval(this.timer);
+
+  }
+
+  handleClick = () => {
+    // console.log(this);
+    this.setState(({visible}) => ({
+      visible: !visible,
+    }));
+  }
+
+
+  render() {
+    return <div><button onClick={this.handleClick}>{this.state.visible ? 'show' : 'hide'}</button>{this.state.index}</div>
+  }
 }
 
-const store = createStore(function counter(state = 0, action) {
-  switch (action.type) {
-  case 'INCREMENT':
-    return state + 1;
-  case 'DECREMENT':
-    return state - 1;
-  default:
-    return state;
+class Test extends React.Component {
+  state = {
+    index: 0,
+    visible: false,
   }
-});
 
-ReactDOM.render(
-  (
-    <ReduxProvider store={store}>
-      <Router>
-        <Provider>
-          <App />
+  index = 0;
+
+  componentDidMount = () => {
+    // console.log('componentDidMount', this);
+    // this.timer = setInterval(() => {
+    //   this.setState(({index}) => {
+    //     this.index = index + 1;
+    //     return ({
+    //       index: index + 1,
+    //     });
+    //   });
+    // }, 600);
+  };
+
+  componentWillUnmount = () => {
+    // console.log('componentWillUnmount', this);
+    clearInterval(this.timer);
+    this.aaa = 'bbb';
+  }
+
+  handleClick = () => {
+    // console.log(this);
+    this.setState(({visible}) => ({
+      visible: !visible,
+    }));
+  }
+
+
+  render() {
+    return <div>{this.state.visible ? <Test2 /> : null}<button onClick={this.handleClick}>{this.state.visible ? 'show' : 'hide'}</button>{this.state.index}</div>
+  }
+}
+
+class Noop extends React.Component {
+  render() {
+    return null;
+  }
+}
+
+class App extends React.Component {
+  state = {
+    visible: true,
+  }
+
+  handleClick = () => {
+    const {visible} = this.state;
+    // if (visible) {
+    //   this.backup = getStateBackup(this);
+    // } else {
+    //   setTimeout(() => {
+    //     deepForceUpdateByBackup(this, this.backup);
+    //   });
+    // }
+    this.setState({visible: !visible});
+  }
+
+  render() {
+    return (
+      <div>
+        <Provider value='test'>
+          <button onClick={this.handleClick}>visible({this.state.visible.toString()})</button>
+          {this.state.visible ? (
+            <KeepAlive>
+              <Test />
+            </KeepAlive>
+          ) : null}
         </Provider>
-      </Router>
-    </ReduxProvider>
-  ),
-  document.getElementById('root')
-);
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(<App />, document.getElementById("root"));
