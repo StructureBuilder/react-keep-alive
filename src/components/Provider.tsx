@@ -44,10 +44,15 @@ export interface IKeepAliveProviderImpl {
 export interface IKeepAliveProviderProps {
   include?: string | string[] | RegExp;
   exclude?: string | string[] | RegExp;
+  max?: number;
 }
 
 export default class KeepAliveProvider extends React.PureComponent<IKeepAliveProviderProps> implements IKeepAliveProviderImpl {
   public static displayName = keepAliveProviderTypeName;
+
+  public static defaultProps = {
+    max: 10,
+  };
 
   public storeElement: HTMLElement;
 
@@ -87,6 +92,7 @@ export default class KeepAliveProvider extends React.PureComponent<IKeepAlivePro
 
   public setCache = (identification: string, value: ICacheItem) => {
     const {cache, keys} = this;
+    const {max} = this.props;
     const currentCache = cache[identification];
     if (!currentCache) {
       keys.push(identification);
@@ -95,7 +101,25 @@ export default class KeepAliveProvider extends React.PureComponent<IKeepAlivePro
       ...currentCache,
       ...value,
     };
-    this.forceUpdate();
+    this.forceUpdate(() => {
+      // If the maximum value is set, the value in the cache is deleted after it goes out.
+      if (currentCache) {
+        return;
+      }
+      if (!max) {
+        return;
+      }
+      const difference = keys.length - (max as number);
+      if (difference <= 0) {
+        return;
+      }
+      const spliceKeys = keys.splice(0, difference);
+      this.forceUpdate(() => {
+        spliceKeys.forEach(key => {
+          delete cache[key as string];
+        });
+      });
+    });
   }
 
   public unactivate = (identification: string) => {
@@ -150,7 +174,7 @@ export default class KeepAliveProvider extends React.PureComponent<IKeepAlivePro
       >
         <React.Fragment>
           {innerChildren}
-          {
+          {ReactDOM.createPortal(
             keys.map(identification => {
               const currentCache = cache[identification];
               const {
@@ -171,24 +195,22 @@ export default class KeepAliveProvider extends React.PureComponent<IKeepAlivePro
 
               // current true, previous false, keepAlive true, cache
               // current true, previous false, keepAlive false, not cache
-              return ReactDOM.createPortal(
-                (
-                  cacheChildren
-                    ? (
-                      <React.Fragment>
-                        <Comment>{identification}</Comment>
-                        {cacheChildren}
-                        <Comment
-                          onLoaded={() => this.startMountingDOM(identification)}
-                        >{identification}</Comment>
-                      </React.Fragment>
-                    )
-                    : null
-                ),
-                storeElement,
+              return (
+                cacheChildren
+                  ? (
+                    <React.Fragment key={identification}>
+                      <Comment>{identification}</Comment>
+                      {cacheChildren}
+                      <Comment
+                        onLoaded={() => this.startMountingDOM(identification)}
+                      >{identification}</Comment>
+                    </React.Fragment>
+                  )
+                  : null
               );
-            })
-          }
+            }),
+            storeElement
+          )}
         </React.Fragment>
       </KeepAliveContext.Provider>
     );

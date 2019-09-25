@@ -87,6 +87,8 @@ Since the cached components need to be stored, the `<Provider>` must be rendered
 
 `exclude`: Any component that matches key will not be cached. It can be a string, an array of strings, or a regular expression.
 
+`max`: If the maximum value is set, the value in the cache is deleted after it goes out.
+
 #### Example
 In the example below, the <App /> component is our root-level component. This means it’s at the very top of our component hierarchy.
 

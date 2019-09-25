@@ -1,10 +1,7 @@
 import React from 'react';
 import { connect } from "react-redux";
 import {bindLifecycle} from '../../../es';
-import {withRouter} from 'react-router-dom';
 
-@withRouter
-@connect()
 @bindLifecycle
 class B extends React.Component {
   componentWillMount() {
