@@ -19,6 +19,7 @@
   },
   "main": "cjs/index.js",
   "module": "es/index.js",
+  "types": "es/index.d.ts",
   "scripts": {
     "clean:es": "rimraf es",
     "clean:cjs": "rimraf cjs",
