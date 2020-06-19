@@ -153,9 +153,7 @@ export default class KeepAliveProvider extends React.PureComponent<IKeepAlivePro
       include,
       exclude,
     } = this.props;
-    if (!storeElement) {
-      return null;
-    }
+
     return (
       <KeepAliveContext.Provider
         value={{
@@ -174,7 +172,7 @@ export default class KeepAliveProvider extends React.PureComponent<IKeepAlivePro
       >
         <React.Fragment>
           {innerChildren}
-          {ReactDOM.createPortal(
+          {storeElement && ReactDOM.createPortal(
             keys.map(identification => {
               const currentCache = cache[identification];
               const {
