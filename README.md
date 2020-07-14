@@ -89,6 +89,8 @@ Since the cached components need to be stored, the `<Provider>` must be rendered
 
 `max`(`v2.5.2+`): If the maximum value is set, the value in the cache is deleted after it goes out.
 
+`cacheMehtod`: Default we use `FIFO` to cache the component, also we provide `LRU` to cache.
+
 #### Example
 In the example below, the <App /> component is our root-level component. This means it’s at the very top of our component hierarchy.
 

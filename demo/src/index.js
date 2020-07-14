@@ -10,6 +10,9 @@ import {Provider, KeepAlive} from '../../es';
 import A from './views/A';
 import B from './views/B';
 import C from './views/C';
+import D from './views/D';
+import E from './views/E';
+import F from './views/F';
 
 function App() {
   const [toggle, setToggle] = useState(true);
@@ -24,6 +27,15 @@ function App() {
         </li>
         <li onClick={() => setToggle(false)}>
           <Link to="/c">c</Link>
+        </li>
+        <li onClick={() => setToggle(true)}>
+          <Link to="/d">d</Link>
+        </li>
+        <li>
+          <Link to="/e">e</Link>
+        </li>
+        <li>
+          <Link to="/f">f</Link>
         </li>
       </ul>
 
@@ -44,7 +56,6 @@ function App() {
           path="/b"
           render={() => (
             <KeepAlive name="B"><B /><B /></KeepAlive>
-
           )}
         />
         <Route
@@ -55,6 +66,30 @@ function App() {
             </KeepAlive>
           )}
         />
+        <Route
+          path="/d"
+          render={() => (
+            <KeepAlive name="D">
+              <D />
+            </KeepAlive>
+          )}
+        />
+        <Route
+          path="/e"
+          render={() => (
+            <KeepAlive name="E">
+              <E />
+            </KeepAlive>
+          )}
+        />
+        <Route
+          path="/f"
+          render={() => (
+            <KeepAlive name="F">
+              <F />
+            </KeepAlive>
+          )}
+        />
       </Switch>
     </div>
   );
@@ -62,7 +97,7 @@ function App() {
 
 ReactDOM.render(
   (
-    <Provider max={2}>
+    <Provider max={5}>
       <Router>
         <App />
       </Router>

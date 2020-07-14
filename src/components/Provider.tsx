@@ -9,6 +9,11 @@ import createStoreElement from '../utils/createStoreElement';
 export const keepAliveProviderTypeName = '$$KeepAliveProvider';
 export const START_MOUNTING_DOM = 'startMountingDOM';
 
+export enum CACHE_METHOD {
+  FIFO = 'FIFO',
+  LRU = 'LRU',
+}
+
 export enum LIFECYCLE {
   MOUNTED,
   UPDATING,
@@ -45,6 +50,7 @@ export interface IKeepAliveProviderProps {
   include?: string | string[] | RegExp;
   exclude?: string | string[] | RegExp;
   max?: number;
+  cacheMethod?: string;
 }
 
 export default class KeepAliveProvider extends React.PureComponent<IKeepAliveProviderProps> implements IKeepAliveProviderImpl {
@@ -52,6 +58,7 @@ export default class KeepAliveProvider extends React.PureComponent<IKeepAlivePro
 
   public static defaultProps = {
     max: 10,
+    cacheMethod: CACHE_METHOD.FIFO,
   };
 
   public storeElement: HTMLElement;
@@ -60,6 +67,8 @@ export default class KeepAliveProvider extends React.PureComponent<IKeepAlivePro
   public cache: ICache = Object.create(null);
 
   public keys: string[] = [];
+
+  public orderKeys: string[] = [];
 
   public eventEmitter = createEventEmitter();
 
@@ -91,13 +100,48 @@ export default class KeepAliveProvider extends React.PureComponent<IKeepAlivePro
   }
 
   public setCache = (identification: string, value: ICacheItem) => {
-    const {cache, keys} = this;
-    const {max} = this.props;
+    const {cacheMethod} = this.props;
+    switch (cacheMethod) {
+      case CACHE_METHOD.FIFO:
+        this.setCacheWithFIFO(identification, value);
+        break;
+      case CACHE_METHOD.LRU:
+        this.setCacheWithLRU(identification, value);
+        break;
+      default: {
+        throw new Error('Invaid cache method, only available with `FIFO` and `LRU`');
+      }
+    }
+  }
+
+  public setCacheWithFIFO = (identification: string, value: ICacheItem) => {
+    const {cache, keys, orderKeys} = this;
     const currentCache = cache[identification];
     if (!currentCache) {
       keys.push(identification);
+      orderKeys.push(identification);
     }
-    this.cache[identification] = {
+    this.update(identification, value);
+  }
+
+  public setCacheWithLRU = (identification: string, value: ICacheItem) => {
+    const {cache, keys, orderKeys} = this;
+    const currentCache = cache[identification];
+    if (currentCache) {
+      const idx = keys.findIndex(key => key === identification);
+      keys.splice(idx, 1);
+    } else {
+      orderKeys.push(identification);
+    }
+    keys.push(identification);
+    this.update(identification, value);
+  }
+
+  public update = (identification: string, value: ICacheItem) => {
+    const {cache, keys, orderKeys} = this;
+    const {max} = this.props;
+    const currentCache = cache[identification];
+    cache[identification] = {
       ...currentCache,
       ...value,
     };
@@ -114,6 +158,14 @@ export default class KeepAliveProvider extends React.PureComponent<IKeepAlivePro
         return;
       }
       const spliceKeys = keys.splice(0, difference);
+
+      spliceKeys.forEach(key => {
+        const idx = orderKeys.findIndex(oKey => oKey === key)
+        if (idx !== -1) {
+          orderKeys.splice(idx, 1)
+        }
+      })
+
       this.forceUpdate(() => {
         spliceKeys.forEach(key => {
           delete cache[key as string];
@@ -140,6 +192,7 @@ export default class KeepAliveProvider extends React.PureComponent<IKeepAlivePro
     const {
       cache,
       keys,
+      orderKeys,
       providerIdentification,
       isExisted,
       setCache,
@@ -175,7 +228,7 @@ export default class KeepAliveProvider extends React.PureComponent<IKeepAlivePro
         <React.Fragment>
           {innerChildren}
           {ReactDOM.createPortal(
-            keys.map(identification => {
+            orderKeys.map(identification => {
               const currentCache = cache[identification];
               const {
                 keepAlive,
