@@ -84,6 +84,13 @@ var KeepAliveProvider = /** @class */ (function (_super) {
                 keys.push(identification);
             }
             _this.cache[identification] = __assign(__assign({}, currentCache), value);
+            for (var key in cache) {
+                if (Object.prototype.hasOwnProperty.call(cache, key)) {
+                    if (keys.indexOf(key) === -1) {
+                        delete cache[key];
+                    }
+                }
+            }
             _this.forceUpdate(function () {
                 // If the maximum value is set, the value in the cache is deleted after it goes out.
                 if (currentCache) {
