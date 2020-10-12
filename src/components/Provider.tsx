@@ -102,6 +102,13 @@ export default class KeepAliveProvider extends React.PureComponent<IKeepAlivePro
       ...currentCache,
       ...value,
     };
+    for (const key in cache) {
+      if (Object.prototype.hasOwnProperty.call(cache, key)) {
+        if (keys.indexOf(key) === -1) {
+          delete cache[key];
+        }
+      }
+    }
     this.forceUpdate(() => {
       // If the maximum value is set, the value in the cache is deleted after it goes out.
       if (currentCache) {
