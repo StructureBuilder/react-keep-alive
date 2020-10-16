@@ -1,5 +1,5 @@
 {
-  "name": "rc-keep-alive",
+  "name": "react-keep-alive-pro",
   "version": "2.5.5",
   "description": "Package will allow components to maintain their status, to avoid repeated re-rendering.",
   "author": "kavience",
