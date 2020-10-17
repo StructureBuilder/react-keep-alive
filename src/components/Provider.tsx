@@ -37,6 +37,7 @@ export interface IKeepAliveProviderImpl {
   existed: boolean;
   providerIdentification: string;
   setCache: (identification: string, value: ICacheItem) => void;
+  removeCache: (name: string) => void;
   unactivate: (identification: string) => void;
   isExisted: () => boolean;
 }
@@ -101,6 +102,13 @@ export default class KeepAliveProvider extends React.PureComponent<IKeepAlivePro
       ...currentCache,
       ...value,
     };
+    for (const key in cache) {
+      if (Object.prototype.hasOwnProperty.call(cache, key)) {
+        if (keys.indexOf(key) === -1) {
+          delete cache[key];
+        }
+      }
+    }
     this.forceUpdate(() => {
       // If the maximum value is set, the value in the cache is deleted after it goes out.
       if (currentCache) {
@@ -120,6 +128,32 @@ export default class KeepAliveProvider extends React.PureComponent<IKeepAlivePro
         });
       });
     });
+  }
+
+  public removeCache = (name: string | string[]) => {
+    const {cache, keys} = this;
+    const needDeletedCacheKeys: any = [];
+    for (const key in cache) {
+      if (Object.prototype.hasOwnProperty.call(cache, key)) {
+        const keepAliveObject = cache[key] as any;
+        // if name is array, mutiple delete caches
+        if (Object.prototype.toString.call(name) === '[object Array]') {
+          if (name.indexOf(keepAliveObject.children._owner.key) > -1 ) {
+            needDeletedCacheKeys.push(key);
+            delete cache[key as string];
+          }
+        } else if (Object.prototype.toString.call(name) === '[object String]') {
+          if (name.indexOf(keepAliveObject.children._owner.key) > -1 ) {
+            needDeletedCacheKeys.push(key);
+            delete cache[key as string];
+          }
+        } else {
+          throw new Error("name can be only string or string array");
+        }
+      }
+    }
+    this.keys = keys.filter((key) => needDeletedCacheKeys.indexOf(key) === -1)
+    this.forceUpdate();
   }
 
   public unactivate = (identification: string) => {
@@ -143,6 +177,7 @@ export default class KeepAliveProvider extends React.PureComponent<IKeepAlivePro
       providerIdentification,
       isExisted,
       setCache,
+      removeCache,
       existed,
       unactivate,
       storeElement,
@@ -165,6 +200,7 @@ export default class KeepAliveProvider extends React.PureComponent<IKeepAlivePro
           providerIdentification,
           isExisted,
           setCache,
+          removeCache,
           unactivate,
           storeElement,
           eventEmitter,

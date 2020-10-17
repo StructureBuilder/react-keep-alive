@@ -133,12 +133,14 @@ class KeepAlive extends React.PureComponent<IKeepAliveInnerProps> {
         setLifecycle,
       },
     } = this.props;
-    const {renderElement, ifStillActivate, reactivate} = cache[identification];
-    setLifecycle(LIFECYCLE.UNMOUNTED);
-    this.retreatPosition();
-    changePositionByComment(identification, storeElement, renderElement);
-    if (ifStillActivate) {
-      reactivate();
+    if (cache[identification]) {
+      const {renderElement, ifStillActivate, reactivate} = cache[identification];
+      setLifecycle(LIFECYCLE.UNMOUNTED);
+      this.retreatPosition();
+      changePositionByComment(identification, storeElement, renderElement);
+      if (ifStillActivate) {
+        reactivate();
+      }
     }
   }
 
