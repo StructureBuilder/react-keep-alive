@@ -4,12 +4,12 @@ import {START_MOUNTING_DOM, LIFECYCLE} from './Provider';
 import keepAlive, {COMMAND} from '../utils/keepAliveDecorator';
 import changePositionByComment from '../utils/changePositionByComment';
 
-interface IKeepAliveProps {
+type IKeepAliveProps = React.PropsWithChildren<{
   key?: string;
   name?: string;
   disabled?: boolean;
   extra?: any;
-}
+}>
 
 interface IKeepAliveInnerProps extends IKeepAliveProps {
   _container: any;
