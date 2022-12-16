@@ -47,7 +47,7 @@ export interface IKeepAliveProviderProps {
   max?: number;
 }
 
-export default class KeepAliveProvider extends React.PureComponent<IKeepAliveProviderProps> implements IKeepAliveProviderImpl {
+export default class KeepAliveProvider extends React.PureComponent<React.PropsWithChildren<IKeepAliveProviderProps>> implements IKeepAliveProviderImpl {
   public static displayName = keepAliveProviderTypeName;
 
   public static defaultProps = {
